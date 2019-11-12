@@ -1,0 +1,66 @@
+C51 COMPILER V9.59.0.0   MAIN                                                              05/13/2019 11:21:57 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main
+                    -.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <STC15F2K60S2.h>
+   2          #define uchar unsigned char
+   3          #define uint unsigned int
+   4          void delay_ms(uint t)
+   5          {
+   6   1        while(t--)
+   7   1        {
+   8   2          uchar i=11,j=190;
+   9   2          do
+  10   2          {
+  11   3            while(--j);
+  12   3          }while(--i);
+  13   2        }
+  14   1      }
+  15          
+  16          //sbit blue=P20;
+  17          //sbit pink=P21;
+  18          //sbit yellow=P22;
+  19          //sbit orange=P23;
+  20          //sbit power=P40;
+  21           uchar code CCW[8]={0x08,0x0c,0x04,0x06,0x02,0x03,0x01,0x09};   //逆时钟旋转相序表
+  22           uchar code CW[8]={0x09,0x01,0x03,0x02,0x06,0x04,0x0c,0x08};    //正时钟旋转相序表
+  23          void main()
+  24          {
+  25   1        uint i;
+  26   1        P40=1;
+  27   1        P41=0;
+  28   1        while(1)
+  29   1        {
+  30   2          for(i=0;i<8;i++)
+  31   2          {
+  32   3            P2=CCW[i];
+  33   3            delay_ms(100);
+  34   3          }
+  35   2          delay_ms(1000);
+  36   2          for(i=0;i<8;i++)
+  37   2          {
+  38   3            P2=CW[i];
+  39   3            delay_ms(100);
+  40   3          }
+  41   2        }
+  42   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    100    ----
+   CONSTANT SIZE    =     16    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       2
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

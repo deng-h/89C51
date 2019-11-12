@@ -1,0 +1,91 @@
+C51 COMPILER V9.59.0.0   ____                                                              04/14/2019 17:50:40 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE ____
+OBJECT MODULE PLACED IN .\Objects\模板.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE 模板.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\模板
+                    -.lst) TABS(2) OBJECT(.\Objects\模板.obj)
+
+line level    source
+
+   1          #include <reg52.h>
+   2          typedef unsigned int u16;
+   3          typedef unsigned char u8;
+   4          
+   5          sbit LSA=P2^2;
+   6          sbit LSB=P2^3;
+   7          sbit LSC=P2^4;
+   8          
+   9          u16 a;
+  10          u8 list[]={0x3f,0x06,0x5b,0x4f,0x66,0x6d,0x7d,0x07,
+  11                  0x7f,0x6f,0x77,0x7c,0x39,0x5e,0x79,0x71};
+  12          
+  13          void Uart_init()
+  14          {
+  15   1        TMOD=0x20;//定时器1,八位自动重装方式
+  16   1        TH1=0xF3;  //晶振12MHZ，波特率倍增，波特率4800
+  17   1        TL1=0xF3;
+  18   1        PCON=0x80;//SMOD波特率倍增位，只用其中的最高位
+  19   1        TR1=1;  //定时器1运行
+  20   1        SCON=0x50; // 0101 0000
+  21   1        ES=1;
+  22   1        EA=1;
+  23   1      }
+  24          
+  25          void Display(u8 i)
+  26          {
+  27   1        LSA=0;LSB=0;LSC=0;  //第一个数码管显示
+  28   1        switch(i)   //用switch是因为传入的是字符串类型
+  29   1        {
+  30   2          case '0':P0=list[0];break;
+  31   2          case '1':P0=list[1];break;
+  32   2          case '2':P0=list[2];break;
+  33   2          case '3':P0=list[3];break;
+  34   2          case '4':P0=list[4];break;
+  35   2          case '5':P0=list[5];break;
+  36   2          case '6':P0=list[6];break;
+  37   2          case '7':P0=list[7];break;
+  38   2          case '8':P0=list[8];break;
+  39   2          case '9':P0=list[9];break;
+  40   2          case 'a':P0=list[10];break;
+  41   2          case 'b':P0=list[11];break;
+  42   2          case 'c':P0=list[12];break;
+  43   2          case 'd':P0=list[13];break;
+  44   2          case 'e':P0=list[14];break;
+  45   2          case 'f':P0=list[15];break;
+  46   2          default :P0=0x80;
+  47   2          
+  48   2        }
+  49   1      }
+  50          
+  51          void main()
+  52          {
+  53   1        Uart_init();
+  54   1        LSA=0;LSB=0;LSC=0;
+C51 COMPILER V9.59.0.0   ____                                                              04/14/2019 17:50:40 PAGE 2   
+
+  55   1        P0=list[0];
+  56   1        while(1);
+  57   1      }
+  58          
+  59          void Uart() interrupt 4
+  60          {
+  61   1        RI=0;  //取消中断申请
+  62   1        a=SBUF;
+  63   1        Display(a);
+  64   1      }
+  65            
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    206    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     18    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

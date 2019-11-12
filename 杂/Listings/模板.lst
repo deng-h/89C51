@@ -1,0 +1,57 @@
+C51 COMPILER V9.54   ____                                                                  10/22/2019 22:09:25 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE ____
+OBJECT MODULE PLACED IN .\Objects\Ä£°å.obj
+COMPILER INVOKED BY: D:\Keil_v5MDK\C51\BIN\C51.EXE Ä£°å.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\Ä
+                    -£°å.lst) TABS(2) OBJECT(.\Objects\Ä£°å.obj)
+
+line level    source
+
+   1          #include <reg52.h>
+   2          sbit key1=P3^2;
+   3          typedef unsigned char uint8;
+   4          typedef unsigned int uint16;
+   5          
+   6          typedef char int8;
+   7          typedef int int16;
+   8          
+   9          void delay(int16 z)
+  10          {
+  11   1        int16 x;
+  12   1        int8 y;
+  13   1        for (x = z; x > 0; x--)
+  14   1          for (y = 114; y >0; y--);
+  15   1      }
+  16          
+  17          void main(void)
+  18          {
+  19   1        char i = 0;
+  20   1        while (1)
+  21   1        {
+  22   2          if (key1 == 0)
+  23   2          {
+  24   3            delay(100);
+  25   3            if (key1 == 0)
+  26   3            {
+  27   4              P2 = ~(1 << i);
+  28   4              i = (i+1)&0x07; 
+  29   4            }
+  30   3            while (!key1);
+  31   3          }
+  32   2        }
+  33   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     62    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

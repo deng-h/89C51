@@ -1,0 +1,139 @@
+C51 COMPILER V9.59.0.0   MAIN                                                              06/07/2019 14:52:26 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main
+                    -.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          /*
+   2          乒乓
+   3          */
+   4          #include "STC15F2K60S2.h"
+   5          #include "PWM.h"
+   6          #include "UART.h"
+   7          #include "ADC.h"
+   8          #define left 0
+   9          #define right 1
+  10          
+  11          typedef unsigned int uint;
+  12          typedef unsigned char uchar;
+  13          
+  14          //*********用于向电脑传送电感的ADC值*************//
+  15          uint count=0;
+  16          uchar num[]={0x30,0x31,0x32,0x33,0x34,0x35,0x36,0x37,0x38,0x39,0x2e};
+  17                      //数字0~9ASCII码的十六进制表示，外加小数点的十六进制表示
+  18          float Dec_data[8];  //转换成10进制
+  19          void Dec2Char(float dec)   //电脑显示
+  20          {
+  21   1        int a,b,c;     //取十进制的前三位
+  22   1        if(dec<0)
+  23   1        {
+  24   2          UART_Write_byte(0x2d);
+  25   2          dec=-dec;
+  26   2        }
+  27   1        a=dec*100/100;
+  28   1        dec=dec-a;
+  29   1        b=dec*100/10;
+  30   1        dec=dec-0.1*b;
+  31   1        c=dec*1000/10;
+  32   1        UART_Write_byte(num[a]);
+  33   1        UART_Write_byte(num[10]);
+  34   1        UART_Write_byte(num[b]);
+  35   1        UART_Write_byte(num[c]);
+  36   1        UART_Write_byte(0x56);   //V
+  37   1        UART_Write_byte(0x09);   //TAB
+  38   1      }
+  39          void Display()
+  40          {
+  41   1        if(count>=3000)
+  42   1        {
+  43   2          count=0;
+  44   2          Dec_data[0]=5*(ADC_Read(0)/256.0);  //读取并转换，P10口
+  45   2          Dec_data[1]=5*(ADC_Read(1)/256.0);  //读取并转换，P11口
+  46   2          Dec2Char(Dec_data[0]);               //显示
+  47   2          Dec2Char(Dec_data[1]);               //显示
+  48   2          Dec2Char(Dec_data[0]-Dec_data[1]);               //显示
+  49   2          UART_Write_byte('\n');
+  50   2        }
+  51   1      }
+  52          void DisplayHex()
+  53          {
+  54   1        if(count>=3000)
+C51 COMPILER V9.59.0.0   MAIN                                                              06/07/2019 14:52:26 PAGE 2   
+
+  55   1        {
+  56   2          UART_Write_byte(ADC_Read(0));
+  57   2          UART_Write_byte(ADC_Read(1));
+  58   2          UART_Write_byte(ADC_Read(0)-ADC_Read(1));
+  59   2          UART_Write_byte('\n');
+  60   2        }
+  61   1      }
+  62          void Timer0_Init(void)    
+  63          {
+  64   1        AUXR |= 0x80;   
+  65   1        TMOD &= 0xF0;   
+  66   1        TL0 = 0xCD;   
+  67   1        TH0 = 0xD4;   
+  68   1        TF0 = 0;    
+  69   1        ET0 = 1;    
+  70   1        TR0 = 1;    
+  71   1      }
+  72          
+  73          void Timer0_Routine(void) interrupt 1
+  74          {
+  75   1        count++;
+  76   1      }
+  77          //**********************************************//
+  78          void main()
+  79          {
+  80   1        uchar motor[2],delta;
+  81   1        EA=0;
+  82   1        PWM_Init();
+  83   1        UART_Init();
+  84   1        Timer0_Init();
+  85   1        ADC_Init();
+  86   1        EA=1;
+  87   1        EADC=1; //打开A/C转换中断
+  88   1        while(1)
+  89   1        {
+  90   2          motor[left]=ADC_Read(0);  //左边传感器
+  91   2          motor[right]=ADC_Read(1);  //右边传感器
+  92   2          delta=motor[left]-motor[right]-0x05;
+  93   2      //    PWM_Out(left,75);
+  94   2      //    PWM_Out(right,67);
+  95   2          if(delta>0)
+  96   2          {
+  97   3            PWM_Out(right,75);
+  98   3            PWM_Out(left,60); 
+  99   3          }
+ 100   2          else if(delta<0)
+ 101   2          {
+ 102   3            PWM_Out(right,60);
+ 103   3            PWM_Out(left,75); 
+ 104   3          }
+ 105   2          //PWM_Out(left,60+delta);  //控制左侧马达
+ 106   2          //PWM_Out(right,60-delta);  //控制右侧马达
+ 107   2          //Display(); 
+ 108   2          //DisplayHex();
+ 109   2        }
+ 110   1      }
+ 111          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    636    ----
+   CONSTANT SIZE    =   ----    ----
+C51 COMPILER V9.59.0.0   MAIN                                                              06/07/2019 14:52:26 PAGE 3   
+
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     45      13
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

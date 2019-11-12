@@ -1,0 +1,151 @@
+C51 COMPILER V9.59.0.0   UART                                                              05/20/2019 21:08:43 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE UART
+OBJECT MODULE PLACED IN uart.OBJ
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE uart.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND TABS(2)
+
+line level    source
+
+   1          #include "STC15Fxxxx.h"
+   2          /********************************************************************************/
+   3          
+   4          void Time0_Init(void);
+   5          
+   6          #define T5MS (65536-MAIN_Fosc*5/1000/12)     //12T模式，5ms定时
+   7          #define T2_BR_Reload  (65536UL -(MAIN_Fosc /4/BaudRate)) //Timer2 重装值，
+   8          
+   9          
+  10          #define BUFFER_LENGTH 20
+  11          unsigned char ReData[BUFFER_LENGTH];
+  12          unsigned char ReceiveNum;
+  13          unsigned char Num;
+  14          
+  15          /****************************************************
+  16                         串口收发程序
+  17          ******************************************************/
+  18          
+  19          void UART_Write(unsigned char *Buf,unsigned char Num)  //发送数据，数组首地址，数组数
+  20          {
+  21   1          unsigned char i;
+  22   1          //RS485E=1;
+  23   1          for(i=0;i<Num;i++)
+  24   1          {
+  25   2              SBUF = Buf[i];          //SUBF接受/发送缓冲器(又叫串行通信特殊功能寄存器)
+  26   2              while(!TI);       //等特数据传送  (TI发送中断标志)
+  27   2              TI=0;   
+  28   2          }
+  29   1      }
+  30          
+  31          /*
+  32          void UART_Hex2Txt(unsigned char Num)
+  33          {
+  34              unsigned char Str[4];
+  35              //RS485E=1;
+  36            Str[0]=Num/100+'0';
+  37            Num%=100;
+  38            Str[1]=Num/10+'0';
+  39            Str[2]=Num%10+'0';
+  40            Str[3]='\n';
+  41            UART_Write(Str,4);
+  42          }
+  43          */
+  44          
+  45          /****************************************************
+  46                         串口初始化程序
+  47          ******************************************************/
+  48          void UART_Init(void) 
+  49          {
+  50   1        Time0_Init();
+  51   1          //S1_8bit();          //方式1，8位数据
+  52   1      
+  53   1          //AUXR &= ~(1<<4);  //Timer stop
+  54   1          //AUXR |= 0x01;    //S1 BRT Use Timer2;
+  55   1          //AUXR |=  (1<<2);   //Timer2 set as 1T mode
+C51 COMPILER V9.59.0.0   UART                                                              05/20/2019 21:08:43 PAGE 2   
+
+  56   1          //TH2 = (u8)(T2_BR_Reload >> 8);
+  57   1          //TL2 = (u8)T2_BR_Reload;
+  58   1          //AUXR |=  (1<<4);  //Timer run enable
+  59   1        
+  60   1          TMOD=0x20;//定时器1,八位自动重装方式
+  61   1          TH1=0xF3;  //晶振12MHZ，波特率倍增，波特率4800
+  62   1          TL1=0xF3;
+  63   1          PCON=0x80;//SMOD波特率倍增位，只用其中的最高位
+  64   1          TR1=1;  //定时器1运行
+  65   1          SCON=0x50; // 0101 0000
+  66   1        
+  67   1          RI=0;
+  68   1          TI=0;
+  69   1        
+  70   1          REN = 1;  //允许接收
+  71   1          ES  = 1;  //允许中断
+  72   1        //ReceiveOK=0;
+  73   1        ReceiveNum=0;
+  74   1          //EA = 1;   //允许全局中断
+  75   1      }
+  76          
+  77          void Time0_Init(void)
+  78          {
+  79   1          //AUXR &= 0x7F;
+  80   1          TMOD &= 0xF0;        //选择模式0  16位计数 最大计数65535
+  81   1          TH0 = T5MS>>8;
+  82   1          TL0 = T5MS;
+  83   1          ET0=1;  
+  84   1          TR0=0;    //关闭T0定时器，等待开启
+  85   1      }
+  86          
+  87          /****************************************************
+  88                         串口中断程序
+  89          ******************************************************/
+  90          void ser_int (void) interrupt UART1_VECTOR   //串行中断，接收
+  91          {
+  92   1          if(RI == 1)        //RI接受中断标志
+  93   1          {
+  94   2          RI = 0;       //清除RI接受中断标志
+  95   2          ReData[Num]=SBUF;  //SUBF接受/发送缓冲器  
+  96   2          Num++;
+  97   2          //SBUF=Num;
+  98   2          TH0 = T5MS >> 8;   //定时器回到初值重新计时
+  99   2          TL0 = T5MS;
+ 100   2          TR0=1;
+ 101   2          }
+ 102   1      }
+ 103          
+ 104          
+ 105          
+ 106          void timer0() interrupt TIMER0_VECTOR   
+ 107          {   
+ 108   1          TR0=0;          //达到规定时间，进入中断，关闭定时器中断
+ 109   1        ReceiveNum=Num;   //记下收到的个数
+ 110   1          Num=0;
+ 111   1      }
+ 112          
+ 113          unsigned char UART_Read(unsigned char *Buf)   //给出最终存放的数组首地址，把缓存数组的数据放入其内
+ 114          {
+ 115   1        unsigned char i;
+ 116   1        for(i=0; i<ReceiveNum;i++)
+ 117   1        {
+C51 COMPILER V9.59.0.0   UART                                                              05/20/2019 21:08:43 PAGE 3   
+
+ 118   2          Buf[i]=ReData[i];
+ 119   2        }
+ 120   1        i=ReceiveNum;
+ 121   1        ReceiveNum=0;
+ 122   1        return i;    //返回数据元素个数
+ 123   1      }
+ 124          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    173    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     22       6
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

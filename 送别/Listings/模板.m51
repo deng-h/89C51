@@ -1,0 +1,167 @@
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                    05/24/2019  15:56:52  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.22.2.0, INVOKED BY:
+C:\KEIL_V5\C51\BIN\BL51.EXE .\Objects\模板.obj TO .\Objects\模板 PRINT (.\Listings\模板.m51) RAMSIZE (256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  .\Objects\模板.obj (____)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C_STARTUP)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C_INIT)
+
+
+LINK MAP OF MODULE:  .\Objects\模板 (____)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            DATA    0008H     0004H     UNIT         _DATA_GROUP_
+            DATA    000CH     0002H     UNIT         ?DT?____
+            IDATA   000EH     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+            CODE    0003H     0008H     UNIT         ?PR?MAIN?____
+            CODE    000BH     0003H     ABSOLUTE     
+            CODE    000EH     00EAH     UNIT         ?CO?____
+            CODE    00F8H     008CH     UNIT         ?C_C51STARTUP
+            CODE    0184H     0083H     UNIT         ?PR?PLAYMUSIC?____
+            CODE    0207H     0038H     UNIT         ?PR?_BUZZER?____
+            CODE    023FH     0013H     UNIT         ?PR?T0?____
+            CODE    0252H     000EH     UNIT         ?PR?INTT0?____
+            CODE    0260H     0005H     UNIT         ?C_INITSEG
+
+
+
+OVERLAY MAP OF MODULE:   .\Objects\模板 (____)
+
+
+SEGMENT                          DATA_GROUP 
+  +--> CALLED SEGMENT          START    LENGTH
+----------------------------------------------
+?C_C51STARTUP                  -----    -----
+  +--> ?PR?MAIN?____
+  +--> ?C_INITSEG
+
+?PR?MAIN?____                  -----    -----
+  +--> ?PR?INTT0?____
+  +--> ?PR?PLAYMUSIC?____
+
+?PR?PLAYMUSIC?____             0008H    0004H
+  +--> ?CO?____
+  +--> ?PR?_BUZZER?____
+
+
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/24/2019  15:56:52  PAGE 2
+
+
+
+SYMBOL TABLE OF MODULE:  .\Objects\模板 (____)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        ____
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0090H         PUBLIC        P1
+  D:00B0H         PUBLIC        P3
+  C:0207H         PUBLIC        _Buzzer
+  B:00A8H.7       PUBLIC        EA
+  D:00A8H         PUBLIC        IE
+  D:00B8H         PUBLIC        IP
+  B:0090H.5       PUBLIC        beep
+  D:000CH         PUBLIC        Beat_val
+  C:023FH         PUBLIC        t0
+  C:0003H         PUBLIC        main
+  C:0252H         PUBLIC        IntT0
+  D:0098H         PUBLIC        SCON
+  D:0089H         PUBLIC        TMOD
+  D:0088H         PUBLIC        TCON
+  B:00A8H.1       PUBLIC        ET0
+  D:008CH         PUBLIC        TH0
+  D:008AH         PUBLIC        TL0
+  B:0088H.4       PUBLIC        TR0
+  C:0184H         PUBLIC        playmusic
+  D:00C8H         PUBLIC        T2CON
+  C:000EH         PUBLIC        T_B
+  D:00D0H         PUBLIC        PSW
+  -------         PROC          INTT0
+  C:0252H         LINE#         51
+  C:0252H         LINE#         52
+  C:0252H         LINE#         54
+  C:0254H         LINE#         55
+  C:0257H         LINE#         56
+  C:0259H         LINE#         57
+  C:025CH         LINE#         58
+  C:025FH         LINE#         59
+  -------         ENDPROC       INTT0
+  -------         PROC          T0
+  C:023FH         LINE#         60
+  C:0241H         LINE#         62
+  C:0244H         LINE#         63
+  C:0247H         LINE#         64
+  C:024FH         LINE#         65
+  -------         ENDPROC       T0
+  -------         PROC          _BUZZER
+  D:0006H         SYMBOL        tone
+  D:0004H         SYMBOL        beat
+  -------         DO            
+  D:0002H         SYMBOL        i
+  -------         ENDDO         
+  C:0207H         LINE#         66
+  C:0207H         LINE#         67
+  C:0207H         LINE#         68
+  C:0207H         LINE#         69
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/24/2019  15:56:52  PAGE 3
+
+
+  C:020BH         LINE#         70
+  C:020DH         LINE#         71
+  C:021AH         LINE#         72
+  C:021AH         LINE#         73
+  C:021CH         LINE#         74
+  C:0220H         LINE#         75
+  C:022BH         LINE#         76
+  C:022DH         LINE#         77
+  C:0231H         LINE#         78
+  C:023CH         LINE#         79
+  C:023CH         LINE#         80
+  C:023EH         LINE#         81
+  -------         ENDPROC       _BUZZER
+  -------         PROC          PLAYMUSIC
+  -------         DO            
+  D:0008H         SYMBOL        tone
+  D:000AH         SYMBOL        beat
+  -------         ENDDO         
+  C:0184H         LINE#         83
+  C:0184H         LINE#         84
+  C:0184H         LINE#         85
+  C:0189H         LINE#         86
+  C:018EH         LINE#         87
+  C:01AFH         LINE#         88
+  C:01AFH         LINE#         89
+  C:01BAH         LINE#         90
+  C:01C5H         LINE#         91
+  C:0204H         LINE#         92
+  C:0206H         LINE#         93
+  -------         ENDPROC       PLAYMUSIC
+  -------         PROC          MAIN
+  C:0003H         LINE#         95
+  C:0003H         LINE#         96
+  C:0003H         LINE#         97
+  C:0006H         LINE#         98
+  C:0006H         LINE#         99
+  C:0006H         LINE#         100
+  C:0009H         LINE#         101
+  -------         ENDPROC       MAIN
+  -------         ENDMOD        ____
+
+Program Size: data=15.0 xdata=0 code=613
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

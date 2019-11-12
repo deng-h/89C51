@@ -1,0 +1,189 @@
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                    04/21/2019  12:27:08  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.22.2.0, INVOKED BY:
+C:\KEIL_V5\C51\BIN\BL51.EXE .\Objects\digi.obj, .\Objects\UART.obj, .\Objects\digital.obj TO .\Objects\digital PRINT (.\
+>> Listings\digital.m51) RAMSIZE (256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  .\Objects\digi.obj (DIGI)
+  .\Objects\UART.obj (UART)
+  .\Objects\digital.obj (DIGITAL)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C_STARTUP)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C_INIT)
+
+
+LINK MAP OF MODULE:  .\Objects\digital (DIGI)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            DATA    0008H     000CH     UNIT         ?DT?DIGITAL
+            IDATA   0014H     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+            CODE    0003H     0016H     UNIT         ?PR?UART_INIT?UART
+                    0019H     000AH                  *** GAP ***
+            CODE    0023H     0003H     ABSOLUTE     
+            CODE    0026H     008CH     UNIT         ?C_C51STARTUP
+            CODE    00B2H     0073H     UNIT         ?PR?DISPLAY?DIGITAL
+            CODE    0125H     0049H     UNIT         ?PR?UART_SEND_RECEIVE?UART
+            CODE    016EH     0011H     UNIT         ?C_INITSEG
+            CODE    017FH     000EH     UNIT         ?PR?MAIN?DIGI
+
+
+
+OVERLAY MAP OF MODULE:   .\Objects\digital (DIGI)
+
+
+SEGMENT
+  +--> CALLED SEGMENT
+---------------------
+?PR?UART_SEND_RECEIVE?UART
+  +--> ?PR?DISPLAY?DIGITAL
+
+*** NEW ROOT ***************************************************
+
+?C_C51STARTUP
+  +--> ?PR?MAIN?DIGI
+  +--> ?C_INITSEG
+
+?PR?MAIN?DIGI
+  +--> ?PR?UART_INIT?UART
+
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  04/21/2019  12:27:08  PAGE 2
+
+
+
+
+SYMBOL TABLE OF MODULE:  .\Objects\digital (DIGI)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        DIGI
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0080H         PUBLIC        P0
+  D:0090H         PUBLIC        P1
+  D:00A0H         PUBLIC        P2
+  D:00B0H         PUBLIC        P3
+  D:00A8H         PUBLIC        IE
+  D:00B8H         PUBLIC        IP
+  C:017FH         PUBLIC        main
+  D:0098H         PUBLIC        SCON
+  D:0088H         PUBLIC        TCON
+  B:00A0H.2       PUBLIC        LSA
+  B:00A0H.3       PUBLIC        LSB
+  B:00A0H.4       PUBLIC        LSC
+  D:00C8H         PUBLIC        T2CON
+  D:00D0H         PUBLIC        PSW
+  -------         PROC          MAIN
+  C:017FH         LINE#         11
+  C:017FH         LINE#         12
+  C:017FH         LINE#         13
+  C:0185H         LINE#         14
+  C:0188H         LINE#         15
+  C:018BH         LINE#         16
+  -------         ENDPROC       MAIN
+  -------         ENDMOD        DIGI
+
+  -------         MODULE        UART
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0090H         PUBLIC        P1
+  D:00B0H         PUBLIC        P3
+  B:00A8H.7       PUBLIC        EA
+  D:00A8H         PUBLIC        IE
+  B:00A8H.4       PUBLIC        ES
+  D:00B8H         PUBLIC        IP
+  B:0098H.0       PUBLIC        RI
+  B:0098H.1       PUBLIC        TI
+  D:0099H         PUBLIC        SBUF
+  D:0087H         PUBLIC        PCON
+  C:0125H         PUBLIC        Uart_Send_Receive
+  D:0098H         PUBLIC        SCON
+  C:0003H         PUBLIC        Uart_init
+  D:0089H         PUBLIC        TMOD
+  D:0088H         PUBLIC        TCON
+  D:008DH         PUBLIC        TH1
+  D:008BH         PUBLIC        TL1
+  B:0088H.6       PUBLIC        TR1
+  D:00C8H         PUBLIC        T2CON
+  D:00D0H         PUBLIC        PSW
+  -------         PROC          UART_INIT
+  C:0003H         LINE#         8
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  04/21/2019  12:27:08  PAGE 3
+
+
+  C:0003H         LINE#         9
+  C:0003H         LINE#         10
+  C:0006H         LINE#         11
+  C:0009H         LINE#         12
+  C:000CH         LINE#         13
+  C:000FH         LINE#         14
+  C:0011H         LINE#         15
+  C:0014H         LINE#         16
+  C:0016H         LINE#         17
+  C:0018H         LINE#         18
+  -------         ENDPROC       UART_INIT
+  -------         PROC          UART_SEND_RECEIVE
+  C:0125H         LINE#         20
+  C:0142H         LINE#         22
+  C:0144H         LINE#         23
+  C:0147H         LINE#         24
+  C:0149H         LINE#         25
+  C:014CH         LINE#         26
+  C:014FH         LINE#         27
+  C:0151H         LINE#         28
+  C:0153H         LINE#         29
+  -------         ENDPROC       UART_SEND_RECEIVE
+  -------         ENDMOD        UART
+
+  -------         MODULE        DIGITAL
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0080H         PUBLIC        P0
+  D:0090H         PUBLIC        P1
+  D:00B0H         PUBLIC        P3
+  D:00A8H         PUBLIC        IE
+  D:00B8H         PUBLIC        IP
+  D:0008H         PUBLIC        count
+  D:0098H         PUBLIC        SCON
+  D:0088H         PUBLIC        TCON
+  D:000AH         PUBLIC        list
+  D:00C8H         PUBLIC        T2CON
+  C:00B2H         PUBLIC        display
+  D:00D0H         PUBLIC        PSW
+  -------         PROC          DISPLAY
+  C:00B2H         LINE#         9
+  C:00B2H         LINE#         10
+  C:00B2H         LINE#         11
+  C:00E2H         LINE#         12
+  C:00E2H         LINE#         13
+  C:00E7H         LINE#         14
+  C:00ECH         LINE#         15
+  C:00F1H         LINE#         16
+  C:00F6H         LINE#         17
+  C:00FBH         LINE#         18
+  C:0100H         LINE#         19
+  C:0105H         LINE#         20
+  C:010AH         LINE#         21
+  C:010FH         LINE#         22
+  C:0112H         LINE#         23
+  C:0112H         LINE#         24
+  C:011AH         LINE#         25
+  C:0124H         LINE#         26
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  04/21/2019  12:27:08  PAGE 4
+
+
+  -------         ENDPROC       DISPLAY
+  -------         ENDMOD        DIGITAL
+
+Program Size: data=21.0 xdata=0 code=387
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

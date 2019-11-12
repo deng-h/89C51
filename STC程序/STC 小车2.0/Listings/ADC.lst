@@ -1,0 +1,65 @@
+C51 COMPILER V9.59.0.0   ADC                                                               06/07/2019 14:52:26 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE ADC
+OBJECT MODULE PLACED IN .\Objects\ADC.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE ADC.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\ADC.l
+                    -st) TABS(2) OBJECT(.\Objects\ADC.obj)
+
+line level    source
+
+   1          #include <STC15F2K60S2.H>
+   2          #include <ADC.h>
+   3          
+   4          #define ADC_POWER 0x80     //ADC电源控制位
+   5          #define ADC_FLAG 0x10      //ADC完成标志
+   6          #define ADC_START 0x08     //ADC启动
+   7          
+   8          #define ADC_SPEEDLL 0x00   //540个时钟
+   9          #define ADC_SPEEDL 0x20    //360个时钟
+  10          #define ADC_SPEEDH 0x40    //180个时钟
+  11          #define ADC_SPEEDHH 0x60   // 90个时钟
+  12          
+  13          typedef unsigned int uint;
+  14          typedef unsigned char uchar;
+  15          
+  16          uchar ChannelSel;
+  17          uchar AD_Result[8];  //8个通道
+  18          
+  19          void ADC_Init(void)
+  20          {
+  21   1        P1ASF = 0xff;             //设置P1口为ADC输入，全部扫描
+  22   1        ADC_RES = 0;                    //清除结果寄存器
+  23   1        ChannelSel=0;
+  24   1        ADC_CONTR = ADC_POWER | ADC_SPEEDLL| ADC_START | ChannelSel;
+  25   1      }
+  26          
+  27          /*----------------------------
+  28                  ADC中断
+  29          ----------------------------*/
+  30          void ADC_ISR() interrupt 5 //using 1
+  31          {
+  32   1        ADC_CONTR &= ~ADC_FLAG;  //FLAG位清零，以便再次产生中断请求   
+  33   1        AD_Result[ChannelSel]=ADC_RES; //保存转换结果，高八位的
+  34   1        ChannelSel=(ChannelSel+1)&0x07; //换到下一通道 
+  35   1        ADC_CONTR = ADC_POWER | ADC_SPEEDLL | ADC_START | ChannelSel;  //重置控制寄存器 
+  36   1      } 
+  37          
+  38          uchar ADC_Read(uchar Ch)   //读取通道某某的高八位数据
+  39          {
+  40   1        return AD_Result[Ch];
+  41   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     59    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      9    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

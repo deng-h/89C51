@@ -1,0 +1,74 @@
+C51 COMPILER V9.59.0.0   PWM                                                               06/12/2019 19:45:44 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE PWM
+OBJECT MODULE PLACED IN .\Objects\pwm.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE pwm.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\pwm.l
+                    -st) TABS(2) OBJECT(.\Objects\pwm.obj)
+
+line level    source
+
+   1          #include "PWM.h"
+   2          #define CCP_S0 0x10
+   3          #define CCP_S1 0x20
+   4          void PWM_Init(void)
+   5          {
+   6   1        ACC = AUXR1;   //P35,36,37口
+   7   1        ACC &= ~(CCP_S0 | CCP_S1);
+   8   1        ACC |= CCP_S0;
+   9   1        AUXR1 = ACC;
+  10   1        
+  11   1      //  AUXR1 &= 0xCF;  //choose I/O output series (P3.6/P3.5)
+  12   1        CCON   = 0;   //initialize CCON, including stoping PCA counter & resetting overflow flag
+  13   1        CL     = 0;
+  14   1        CH     = 0;   //initialize counter CH & CL
+  15   1        
+  16   1        CMOD   = 0x02;  //set PCA timer source (SYSclk/2)
+  17   1                //disable PCA timer overflow interruption
+  18   1        
+  19   1        PCA_PWM0 = 0x00;      //PCA module 0 work as 8 bit mode
+  20   1      //  CCAP0H = CCAP0L = 26;   //duty ratio is 90%
+  21   1        CCAPM0 = 0x42;
+  22   1        
+  23   1        PCA_PWM1 = 0x00;      //PCA module 1 work as 8 bit mode
+  24   1      //  CCAP1H = CCAP1L = 51;   //duty ratio is 80%
+  25   1        CCAPM1 = 0x42;
+  26   1        
+  27   1        PCA_PWM2 = 0x00;      //PCA module 2 work as 8 bit mode
+  28   1        CCAP0H = CCAP0L = 77;   //duty ratio is 70%
+  29   1        CCAPM0 = 0x42;
+  30   1      
+  31   1        CR = 1;   //enable PCA timer
+  32   1      }
+  33          
+  34          void PWM_Out(unsigned char ch, unsigned char duty)   //duty 0~100
+  35          {
+  36   1        if(ch==0)
+  37   1        {
+  38   2          CCAP0H=CCAP0L=256-256*duty/100;  //设置占空比
+  39   2        }
+  40   1        if(ch==1)
+  41   1        {
+  42   2          CCAP1H=CCAP1L=256-256*duty/100;  //设置占空比
+  43   2        }
+  44   1        if(ch==2)
+  45   1        {
+  46   2          CCAP2H=CCAP2L=256-256*duty/100;  //设置占空比
+  47   2        }
+  48   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    114    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+C51 COMPILER V9.59.0.0   PWM                                                               06/12/2019 19:45:44 PAGE 2   
+
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

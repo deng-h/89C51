@@ -1,0 +1,49 @@
+C51 COMPILER V9.52.0.0   ISR                                                               04/16/2018 19:54:31 PAGE 1   
+
+
+C51 COMPILER V9.52.0.0, COMPILATION OF MODULE ISR
+OBJECT MODULE PLACED IN ISR.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE ISR.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          #include <REG51.H>
+   2          #include "stdint.h"
+   3          #include "ledshift.h"
+   4          //#include "key.h"
+   5          
+   6          uint8_t Count=0;
+   7          void PeriodTask10ms(void)
+   8          {
+   9   1              Led7Seg_Flush();
+*** WARNING C206 IN LINE 9 OF ISR.c: 'Led7Seg_Flush': missing function-prototype
+  10   1      }
+  11          
+  12          void PeriodTask1s(void)
+  13          {
+  14   1              
+  15   1      }
+  16          void tm0_isr() interrupt 1 using 1
+  17          {
+  18   1              PeriodTask10ms();
+  19   1              if(Count++>=100)
+  20   1              {
+  21   2                      Count=0;
+  22   2                      PeriodTask1s();
+  23   2              }
+  24   1      }
+  25          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     47    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      1    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

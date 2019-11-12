@@ -1,0 +1,56 @@
+C51 COMPILER V9.59.0.0   ____                                                              04/21/2019 22:03:08 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE ____
+OBJECT MODULE PLACED IN .\Objects\模板.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE 模板.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\模板
+                    -.lst) TABS(2) OBJECT(.\Objects\模板.obj)
+
+line level    source
+
+   1          #include <reg52.h>
+   2          #include <intrins.h>
+   3          
+   4          typedef unsigned int u16;
+   5          typedef unsigned char u8;
+   6          
+   7          sbit RCLK_=P3^5;
+   8          sbit SRCLK=P3^6;
+   9          sbit SER=P3^4;
+  10          
+  11          void hc595byte(u8 dat)
+  12          {
+  13   1        u16 i;
+  14   1        RCLK_=0;
+  15   1        SRCLK=0;
+  16   1        for(i=0;i<8;i++)   //一位位将data送入移位寄存器，先高位，后低位
+  17   1        {
+  18   2          SER=dat>>7;   //取最高位
+  19   2          dat=dat<<1;   //移去最高位，最低位补0
+  20   2          SRCLK=1;   //移位寄存器，产生一个上升沿，将SER的数据移入移位寄存器
+  21   2          _nop_();   //延时
+  22   2          _nop_();
+  23   2          SRCLK=0;   //归零，以便再次产生上升沿
+  24   2        }
+  25   1        RCLK_=1;   //存储寄存器产生上升沿，将SER已移入的数据送给输出端
+  26   1      }
+  27          void main()
+  28          {
+  29   1        hc595byte(0xff);
+  30   1        P0=0x3f;
+  31   1        while(1);
+  32   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     52    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

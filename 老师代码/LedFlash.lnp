@@ -1,0 +1,7 @@
+"main.obj",
+"Led7Seg.obj",
+"uart.obj",
+"Tick.obj",
+"Key.obj",
+"Task.obj" 
+TO "LedFlash" 

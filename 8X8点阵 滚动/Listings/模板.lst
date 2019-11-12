@@ -1,0 +1,116 @@
+C51 COMPILER V9.59.0.0   ____                                                              01/15/2019 16:23:01 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE ____
+OBJECT MODULE PLACED IN .\Objects\模板.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE 模板.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\模板
+                    -.lst) TABS(2) OBJECT(.\Objects\模板.obj)
+
+line level    source
+
+   1          #include <reg52.h>
+   2          #include <intrins.h>
+   3          typedef unsigned int u16;
+   4          typedef unsigned char u8;
+   5          sbit RCLK_=P3^5;
+   6          sbit SRCLK=P3^6;
+   7          sbit SER=P3^4;
+   8          void delay(u16 i)
+   9          {
+  10   1        while(i--);
+  11   1      }
+  12          void hc595byte(u8 dat)
+  13          {
+  14   1        u16 i;
+  15   1        RCLK_=0;
+  16   1        SRCLK=0;
+  17   1        for(i=0;i<8;i++)   //一位位将data送入移位寄存器，先高位，后低位
+  18   1        {
+  19   2          SER=dat>>7;   //取最高位
+  20   2          dat=dat<<1;   //移去最高位，最低位补0
+  21   2          SRCLK=1;   //移位寄存器，产生一个上升沿，将SER的数据移入移位寄存器
+  22   2          _nop_();   //延时
+  23   2          _nop_();
+  24   2          SRCLK=0;   //归零，以便再次产生上升沿
+  25   2        }
+  26   1        RCLK_=1;   //存储寄存器产生上升沿，将SER已移入的数据送给输出端
+  27   1      }
+  28          u8 P0duan[]={0x7f,0xbf,0xdf,0xef,0xf7,0xfb,0xfd,0xfe};
+  29          u8 a[]={0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
+  30          u8 b[]={0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x3c};
+  31          u8 c[]={0x00,0x00,0x00,0x00,0x00,0x00,0x3c,0x42};
+  32          u8 d[]={0x00,0x00,0x00,0x00,0x00,0x3c,0x42,0x81};
+  33          u8 e[]={0x00,0x00,0x00,0x00,0x3c,0x42,0x81,0x81};
+  34          u8 f[]={0x00,0x00,0x00,0x3c,0x42,0x81,0x81,0x42};
+  35          u8 g[]={0x00,0x00,0x3c,0x42,0x81,0x81,0x42,0x3c};
+  36          u8 h[]={0x00,0x3c,0x42,0x81,0x81,0x42,0x3c,0x00};
+  37          u8 i[]={0x3c,0x42,0x81,0x81,0x42,0x3c,0x00,0x00};
+  38          u8 j[]={0x42,0x81,0x81,0x42,0x3c,0x00,0x00,0x00};
+  39          u8 k[]={0x81,0x81,0x42,0x3c,0x00,0x00,0x00,0x00};
+  40          u8 l[]={0x81,0x42,0x3c,0x00,0x00,0x00,0x00,0x00};
+  41          u8 m[]={0x42,0x3c,0x00,0x00,0x00,0x00,0x00,0x00};
+  42          u8 n[]={0x3c,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
+  43          void display(u8 a[])
+  44          {
+  45   1        u16 i,j;
+  46   1        for(j=0;j<30;j++)
+  47   1        {
+  48   2          for(i=0;i<8;i++)
+  49   2          {
+  50   3             P0=P0duan[i];
+  51   3             hc595byte(a[i]);
+  52   3             delay(100);
+  53   3             hc595byte(0x00);
+  54   3          }
+C51 COMPILER V9.59.0.0   ____                                                              01/15/2019 16:23:01 PAGE 2   
+
+  55   2        }
+  56   1      }
+  57          void main()
+  58          {
+  59   1        u16 z;
+  60   1        while(1)
+  61   1        {
+  62   2          for(z=0;z<14;z++)
+  63   2          {
+  64   3            switch(z)
+  65   3            {
+  66   4              case(0):display(a);break;
+  67   4              case(1):display(b);break;
+  68   4              case(2):display(c);break;
+  69   4              case(3):display(d);break;
+  70   4              case(4):display(e);break;
+  71   4              case(5):display(f);break;
+  72   4              case(6):display(g);break;
+  73   4              case(7):display(h);break;
+  74   4              case(8):display(i);break;
+  75   4              case(9):display(j);break;
+  76   4              case(10):display(k);break;
+  77   4              case(11):display(l);break;
+  78   4              case(12):display(m);break;
+  79   4              case(13):display(n);break;
+  80   4            }
+  81   3          }
+  82   2        }
+  83   1      }
+  84          
+  85          
+  86          
+  87          
+  88          
+  89          
+  90          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    350    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =    120       9
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

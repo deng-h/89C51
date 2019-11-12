@@ -1,0 +1,98 @@
+C51 COMPILER V9.54   MAIN                                                                  10/13/2019 16:52:24 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\Keil_v5MDK\C51\BIN\C51.EXE main.c LARGE OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\List
+                    -ings\main.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          /*
+   2          用于电磁传感器
+   3          */
+   4          #include <STC15F2K60S2.H>
+   5          #include <UART.h>
+   6          #include <ADC.h>
+   7          typedef unsigned int uint;
+   8          typedef unsigned char uchar;
+   9          uint count=0;
+  10          uchar num[]={0x30,0x31,0x32,0x33,0x34,0x35,0x36,0x37,0x38,0x39,0x2e};
+  11                      //数字0~9ASCII码的十六进制表示，外加小数点的十六进制表示
+  12          float Dec_data[8];  //转换成10进制
+  13          
+  14          void Dec2Char(float dec)   //电脑显示
+  15          {
+  16   1        int a,b,c;     //取十进制的前三位
+  17   1        if(dec<0)
+  18   1        {
+  19   2          UART_Write_byte(0x2d);
+  20   2          dec=-dec;
+  21   2        }
+  22   1        a=dec*100/100;
+  23   1        dec=dec-a;
+  24   1        b=dec*100/10;
+  25   1        dec=dec-0.1*b;
+  26   1        c=dec*1000/10;
+  27   1        UART_Write_byte(num[a]);
+  28   1        UART_Write_byte(num[10]);
+  29   1        UART_Write_byte(num[b]);
+  30   1        UART_Write_byte(num[c]);
+  31   1        UART_Write_byte(0x56);   //V
+  32   1        UART_Write_byte(0x09);   //TAB
+  33   1      
+  34   1      }
+  35          void Timer0_Init(void)    
+  36          {
+  37   1        AUXR |= 0x80;   
+  38   1        TMOD &= 0xF0;   
+  39   1        TL0 = 0xCD;   
+  40   1        TH0 = 0xD4;   
+  41   1        TF0 = 0;    
+  42   1        ET0 = 1;    
+  43   1        TR0 = 1;    
+  44   1      }
+  45          
+  46          void main()
+  47          {
+  48   1        EA=0;
+  49   1        UART_Init();
+  50   1        Timer0_Init();
+  51   1        ADC_Init();
+  52   1        EA=1;
+  53   1        EADC=1; //打开A/C转换中断
+  54   1        while(1)
+C51 COMPILER V9.54   MAIN                                                                  10/13/2019 16:52:24 PAGE 2   
+
+  55   1        {
+  56   2          if(count>=3000)
+  57   2          {
+  58   3            count=0;
+  59   3            Dec_data[0]=5*(ADC_Read(0)/256.0);  //读取并转换，P10口
+  60   3            Dec_data[1]=5*(ADC_Read(1)/256.0);  //读取并转换，P11口
+  61   3            Dec2Char(Dec_data[0]);               //显示
+  62   3            Dec2Char(Dec_data[1]);               //显示
+  63   3            Dec2Char(Dec_data[1]-Dec_data[0]);               //显示
+  64   3            UART_Write_byte('\n');
+  65   3          }
+  66   2        }
+  67   1      }
+  68          
+  69          void Timer0_Routine(void) interrupt 1
+  70          {
+  71   1        count++;
+  72   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    617    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =     45      10
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

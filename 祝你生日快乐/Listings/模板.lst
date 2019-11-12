@@ -1,0 +1,125 @@
+C51 COMPILER V9.59.0.0   ____                                                              01/20/2019 19:23:57 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE ____
+OBJECT MODULE PLACED IN .\Objects\模板.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE 模板.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\模板
+                    -.lst) TABS(2) OBJECT(.\Objects\模板.obj)
+
+line level    source
+
+   1          #include <reg52.h>
+   2          sbit beep=P1^5;
+   3          int Beat_val=0;
+   4          #define Do0 358
+   5          #define Do  179
+   6          #define Do1 90
+   7          
+   8          #define Re0 319
+   9          #define Re  160
+  10          #define Re1 80
+  11          
+  12          #define Mi0 284
+  13          #define Mi  142
+  14          #define Mi1 71
+  15          
+  16          #define Fa0 269
+  17          #define Fa  135
+  18          #define Fa1 67
+  19          
+  20          #define So0 239
+  21          #define So  119
+  22          #define So1 60
+  23          
+  24          #define La0 213
+  25          #define La  106
+  26          #define La1 53
+  27          
+  28          #define Si0 189
+  29          #define Si 95
+  30          #define Si1 47
+  31          
+  32          #define STP 10000
+  33          
+  34          #define B41 2000  
+  35          #define B31 3000
+  36          #define B21 1000
+  37          #define B32 750
+  38          #define B11 500
+  39          #define B34 313
+  40          #define B12 250
+  41          #define B13 125
+  42          #define B14 63
+  43          int code T_B[]={So,B12,So,B12,Si,B11,So,B11,Do1,B11,Si,B21,So,B12,So,B12,
+  44                          La,B11,So,B11,Re1,B11,Do1,B21,So,B12,So,B12,So1,B11,Mi1,
+  45                          B11,Do1,B11,Si,B11,La,B21,Fa1,B12,Fa1,B12,Mi1,B11,
+  46                          Do1,B11,Re1,B11,Do1,B31,Do1,B31,0,0,0,0,0,0};
+  47          void IntT0()   
+  48          {  
+  49   1      
+  50   1        ET0=1;      
+  51   1        TMOD|=0x01; 
+  52   1        TR0=1;      
+  53   1        TH0=0xfc;   
+  54   1        TL0=0x18;
+C51 COMPILER V9.59.0.0   ____                                                              01/20/2019 19:23:57 PAGE 2   
+
+  55   1      }
+  56          void t0() interrupt 1
+  57          {
+  58   1        TH0=0xfc;   
+  59   1        TL0=0x18;
+  60   1        Beat_val--;
+  61   1      }
+  62          void Buzzer(int tone,int beat)
+  63          {
+  64   1        int i=0;
+  65   1        Beat_val=beat;
+  66   1        EA=1; 
+  67   1        while(Beat_val>0)
+  68   1        {
+  69   2          beep=0;
+  70   2          i=tone;
+  71   2          while(i) i--;
+  72   2          beep=1;
+  73   2          i=tone;
+  74   2          while(i) i--;
+  75   2        }
+  76   1          EA=0; 
+  77   1      }
+  78          
+  79          void playmusic()
+  80          {
+  81   1        int tone=0;
+  82   1        int beat=1;
+  83   1        while(T_B[beat]>0)
+  84   1        {
+  85   2          tone+=2;
+  86   2          beat+=2;
+  87   2          Buzzer(T_B[tone],T_B[beat]);
+  88   2        }
+  89   1      }
+  90          
+  91          void main()
+  92          {
+  93   1        IntT0();
+  94   1        while(1)
+  95   1        {
+  96   2          playmusic();
+  97   2        }
+  98   1      }
+  99          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    228    ----
+   CONSTANT SIZE    =    116    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      2       4
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

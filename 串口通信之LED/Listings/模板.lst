@@ -1,0 +1,76 @@
+C51 COMPILER V9.59.0.0   ____                                                              03/17/2019 11:16:14 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE ____
+OBJECT MODULE PLACED IN .\Objects\模板.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE 模板.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\模板
+                    -.lst) TABS(2) OBJECT(.\Objects\模板.obj)
+
+line level    source
+
+   1          #include <reg52.h>
+   2          typedef unsigned int u16;
+   3          typedef unsigned char u8;
+   4          
+   5          u16 flag=0,i;
+   6          u8 a;
+   7          u8 list[]={0xfe,0xfd,0xfb,0xf7,0xef,0xdf,0xbf,0x7f};
+   8          
+   9          void UsartInt()//串口初始化函数
+  10          {
+  11   1        TMOD=0x20;//定时器1
+  12   1        TH1=0xF3;
+  13   1        TL1=0xF3;
+  14   1        PCON=0x80;//SMOD波特率倍增位
+  15   1        TR1=1;  //定时器1运行
+  16   1        SCON=0x50; // 0101 0000
+  17   1        ES=1;
+  18   1        EA=1;
+  19   1      }
+  20          void main()
+  21          {
+  22   1         UsartInt();
+  23   1         while(1)
+  24   1         {
+  25   2           i=(int)(a-'0');
+  26   2           if(flag==1)
+  27   2           {
+  28   3             switch(i)
+  29   3             {
+  30   4               case 0:P2=list[0];break;
+  31   4               case 1:P2=list[1];break;
+  32   4               case 2:P2=list[2];break;
+  33   4               case 3:P2=list[3];break;
+  34   4               case 4:P2=list[4];break;
+  35   4               case 5:P2=list[5];break;
+  36   4               case 6:P2=list[6];break;
+  37   4               case 7:P2=list[7];break;
+  38   4             }
+  39   3             flag=0;
+  40   3           }
+  41   2         }
+  42   1      }
+  43          void Usart() interrupt 4
+  44          {
+  45   1        RI=0;
+  46   1        a=SBUF;
+  47   1        flag=1;
+  48   1      }
+  49          
+  50          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    143    ----
+C51 COMPILER V9.59.0.0   ____                                                              03/17/2019 11:16:14 PAGE 2   
+
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     13    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

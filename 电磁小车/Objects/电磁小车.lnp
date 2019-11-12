@@ -1,0 +1,6 @@
+".\Objects\main.obj",
+".\Objects\PWM.obj",
+".\Objects\ADC.obj",
+".\Objects\UART.obj" 
+TO ".\Objects\电磁小车" 
+PRINT(".\Listings\电磁小车.m51") RAMSIZE(256) 

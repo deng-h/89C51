@@ -1,0 +1,112 @@
+C51 COMPILER V9.59.0.0   ____                                                              01/11/2019 19:11:00 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE ____
+OBJECT MODULE PLACED IN .\Objects\模板.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE 模板.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\模板
+                    -.lst) TABS(2) OBJECT(.\Objects\模板.obj)
+
+line level    source
+
+   1          #include <reg52.h>
+   2          typedef unsigned int u16;
+   3          typedef unsigned char u8;
+   4          sbit LSA=P2^2;
+   5          sbit LSB=P2^3;
+   6          sbit LSC=P2^4;
+   7          u8 code list[]={0x3f,0x06,0x5b,0x4f,0x66,0x6d,0x7d,0x07,0x7f,
+   8                                     0x6f,0x77,0x7c,0x39,0x5e,0x79,0x71};
+   9          void delay(u16 i)    //延时
+  10          {
+  11   1         while(i--);
+  12   1      }
+  13          void digdisplay(u16 t)    //动态数显函数
+  14          {
+  15   1        u16 i;
+  16   1        for(i=0;i<8;i++)
+  17   1        {
+  18   2          switch (i)
+  19   2          {
+  20   3            case(0):LSA=0;LSB=0;LSC=0;break;
+  21   3            case(1):LSA=1;LSB=0;LSC=0;break;
+  22   3            case(2):LSA=0;LSB=1;LSC=0;break;
+  23   3            case(3):LSA=1;LSB=1;LSC=0;break;
+  24   3            case(4):LSA=0;LSB=0;LSC=1;break;
+  25   3            case(5):LSA=1;LSB=0;LSC=1;break;
+  26   3            case(6):LSA=0;LSB=1;LSC=1;break;
+  27   3            case(7):LSA=1;LSB=1;LSC=1;break;
+  28   3          }
+  29   2          P0=list[i];
+  30   2          delay(t);         //延时
+  31   2          P0=0x00;         //消影
+  32   2        }
+  33   1      }
+  34          void main()
+  35          {
+  36   1         while(1)
+  37   1         {
+  38   2           u16 i,j,k,p;
+  39   2           for(i=30000;i>=6000;i-=6000)
+  40   2           {
+  41   3             digdisplay(i);
+  42   3              if(i==6000)
+  43   3              {
+  44   4                for(j=6000;j>=1000;j-=500)
+  45   4                 {
+  46   5                   digdisplay(j);
+  47   5                   if(j==1000)
+  48   5                   {
+  49   6                     for(k=1000;k>=500;k-=100)
+  50   6                     {
+  51   7                       digdisplay(k);
+  52   7                       if(k==500)
+  53   7                       {
+  54   8                         for(p=500;p>=200;p-=50)
+C51 COMPILER V9.59.0.0   ____                                                              01/11/2019 19:11:00 PAGE 2   
+
+  55   8                         {
+  56   9                           digdisplay(p);
+  57   9                           while(p==200)
+  58   9                             digdisplay(p);
+  59   9                         }
+  60   8                       }
+  61   7                     }
+  62   6                   }
+  63   5                 }
+  64   4              }
+  65   3           } 
+  66   2         }
+  67   1      }
+  68          
+  69          
+  70          
+  71          
+  72          
+  73          
+  74          
+  75          
+  76          
+  77          
+  78          
+  79          
+  80          
+  81          
+  82          
+  83          
+  84          
+  85          
+  86          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    346    ----
+   CONSTANT SIZE    =     16    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----      10
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

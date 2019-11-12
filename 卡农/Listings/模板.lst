@@ -1,0 +1,135 @@
+C51 COMPILER V9.59.0.0   ____                                                              02/01/2019 10:47:46 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE ____
+OBJECT MODULE PLACED IN .\Objects\模板.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE 模板.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\模板
+                    -.lst) TABS(2) OBJECT(.\Objects\模板.obj)
+
+line level    source
+
+   1          #include <reg52.h>
+   2          sbit beep=P1^5;
+   3          int Beat_val=0;
+   4          
+   5          #define Do00 714
+   6          #define Do0  358
+   7          #define Do   179
+   8          #define Do1  90
+   9          
+  10          #define Re00 638
+  11          #define Re0  319
+  12          #define Re   160
+  13          #define Re1  80
+  14          
+  15          #define Mi00 568
+  16          #define Mi0  284
+  17          #define Mi   142
+  18          #define Mi1  71
+  19          
+  20          #define Fa00 539
+  21          #define Fa0  269
+  22          #define Fa   135
+  23          #define Fa1  67
+  24          
+  25          #define So00 477
+  26          #define So0  239
+  27          #define So   119
+  28          #define So1  60
+  29          
+  30          #define La00 425
+  31          #define La0  213
+  32          #define La   106
+  33          #define La1  53
+  34          
+  35          #define Si00 379
+  36          #define Si0  189
+  37          #define Si   95
+  38          #define Si1  47
+  39          
+  40          #define STP 10000
+  41          
+  42          #define B41 2000  
+  43          #define B31 3000
+  44          #define B21 1000
+  45          #define B32 750
+  46          #define B11 500
+  47          #define B34 313
+  48          #define B12 250
+  49          #define B13 125
+  50          #define B14 63
+  51          int code T_B[]={So1,B12,Mi1,B14,Fa1,B14,So1,B12,Mi1,B14,Fa1,B14,So1,B14,So,B14,La,B14,Si,B14,
+  52                          Do1,B14,Re1,B14,Mi1,B14,Fa1,B14,Mi1,B12,Do1,B14,Re1,B14,Mi1,B12,Mi,B14,Fa,B14,
+  53                          So,B14,La,B14,So,B14,Fa,B14,So,B14,Mi,B14,Fa,B14,So,B14,Fa,B12,La,B14,So,B14,
+  54                          Fa,B12,Mi,B14,Re,B14,Mi,B14,Re,B14,Do,B14,Re,B14,Mi,B14,Fa,B14,So,B14,La,B14};
+C51 COMPILER V9.59.0.0   ____                                                              02/01/2019 10:47:46 PAGE 2   
+
+  55          void IntT0()   
+  56          {  
+  57   1      
+  58   1        ET0=1;      
+  59   1        TMOD|=0x01; 
+  60   1        TR0=1;      
+  61   1        TH0=0xfc;   
+  62   1        TL0=0x18;
+  63   1      }
+  64          void t0() interrupt 1
+  65          {
+  66   1        TH0=0xfc;   
+  67   1        TL0=0x18;
+  68   1        Beat_val--;
+  69   1      }
+  70          void Buzzer(int tone,int beat)
+  71          {
+  72   1        int i=0;
+  73   1        Beat_val=beat;
+  74   1        EA=1; 
+  75   1        while(Beat_val>0)
+  76   1        {
+  77   2          beep=0;
+  78   2          i=tone;
+  79   2          while(i) i--;
+  80   2          beep=1;
+  81   2          i=tone;
+  82   2          while(i) i--;
+  83   2        }
+  84   1          EA=0; 
+  85   1      }
+  86          
+  87          void playmusic()
+  88          {
+  89   1        int tone=0;
+  90   1        int beat=1;
+  91   1        while(T_B[beat]>0)
+  92   1        {
+  93   2          tone+=2;
+  94   2          beat+=2;
+  95   2          Buzzer(T_B[tone],T_B[beat]);
+  96   2        }
+  97   1      }
+  98          
+  99          void main()
+ 100          {
+ 101   1        IntT0();
+ 102   1        while(1)
+ 103   1        {
+ 104   2          playmusic();
+ 105   2        }
+ 106   1      }
+ 107          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    228    ----
+   CONSTANT SIZE    =    168    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      2       4
+   IDATA SIZE       =   ----    ----
+C51 COMPILER V9.59.0.0   ____                                                              02/01/2019 10:47:46 PAGE 3   
+
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

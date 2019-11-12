@@ -1,0 +1,61 @@
+C51 COMPILER V9.59.0.0   LED7SEG                                                           05/20/2019 21:08:43 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE LED7SEG
+OBJECT MODULE PLACED IN Led7Seg.OBJ
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE Led7Seg.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND TABS(2)
+
+line level    source
+
+   1          #include "STC15Fxxxx.h"
+   2          #include "stdint.h"
+   3          
+   4          #define DISPLAY_SEG P2
+   5          #define DISPLAY_BIT P4
+   6          
+   7          
+   8          unsigned char code DecToSeg[]={0xc0,0xf9,0xa4,0xb0,0x99,0x92,0x82,0xf8,0x80,0x90,
+   9                                         0x88,0x83,0xc6,0xa1,0x86,0x8e,0xa3,0xab,0xff};
+  10                                    //   '0'  '1'  '2'  '3'  '4'  '5'  '6'  '7'  '8'  '9'  
+  11                                    //   'a'  'b'  'c'  'd'  'e'  'f'  'o'  'n'  ' '
+  12          //uint8_t code BitCode[4]={0x7F,0xBF,0xDF,0xEF};
+  13          uint8_t code BitCode[4]={0xF7,0xFB,0xFD,0xFE};
+  14          
+  15          uint8_t DisplayBuf[4];
+  16          uint8_t Cnt=0;
+  17          void Led7Seg_Flush(void)
+  18          {
+  19   1        Cnt=(Cnt+1)&0x03;
+  20   1        DISPLAY_SEG=DisplayBuf[Cnt];
+  21   1        DISPLAY_BIT=BitCode[Cnt];
+  22   1      } 
+  23          
+  24          void Led7Seg_WriteNum(uint8_t * NumBuf)
+  25          {
+  26   1        DisplayBuf[0]=DecToSeg[NumBuf[0]];
+  27   1        DisplayBuf[1]=DecToSeg[NumBuf[1]];
+  28   1        DisplayBuf[2]=DecToSeg[NumBuf[2]];
+  29   1        DisplayBuf[3]=DecToSeg[NumBuf[3]];
+  30   1      }
+  31          
+  32          void Led7Seg_WriteCode(uint8_t * CodeBuf)
+  33          {
+  34   1        DisplayBuf[0]=CodeBuf[0];
+  35   1        DisplayBuf[1]=CodeBuf[1];
+  36   1        DisplayBuf[2]=CodeBuf[2];
+  37   1        DisplayBuf[3]=CodeBuf[3];
+  38   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     98    ----
+   CONSTANT SIZE    =     23    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      5    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

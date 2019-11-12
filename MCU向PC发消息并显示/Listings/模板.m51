@@ -1,0 +1,132 @@
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                    04/14/2019  18:10:46  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.22.2.0, INVOKED BY:
+C:\KEIL_V5\C51\BIN\BL51.EXE .\Objects\模板.obj TO .\Objects\模板 PRINT (.\Listings\模板.m51) RAMSIZE (256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  .\Objects\模板.obj (____)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C_STARTUP)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C_INIT)
+
+
+LINK MAP OF MODULE:  .\Objects\模板 (____)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            DATA    0008H     0008H     UNIT         ?DT?____
+            IDATA   0010H     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+            CODE    0003H     0003H     ABSOLUTE     
+            CODE    0006H     008CH     UNIT         ?C_C51STARTUP
+            CODE    0092H     0042H     UNIT         ?PR?EX0?____
+            CODE    00D4H     001AH     UNIT         ?PR?UART_INIT?____
+            CODE    00EEH     000DH     UNIT         ?C_INITSEG
+            CODE    00FBH     0005H     UNIT         ?PR?MAIN?____
+
+
+
+OVERLAY MAP OF MODULE:   .\Objects\模板 (____)
+
+
+SEGMENT
+  +--> CALLED SEGMENT
+---------------------
+?C_C51STARTUP
+  +--> ?PR?MAIN?____
+  +--> ?C_INITSEG
+
+?PR?MAIN?____
+  +--> ?PR?UART_INIT?____
+
+
+
+SYMBOL TABLE OF MODULE:  .\Objects\模板 (____)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        ____
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0090H         PUBLIC        P1
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  04/14/2019  18:10:46  PAGE 2
+
+
+  D:00B0H         PUBLIC        P3
+  B:00A8H.7       PUBLIC        EA
+  D:00A8H         PUBLIC        IE
+  B:00A8H.4       PUBLIC        ES
+  D:00B8H         PUBLIC        IP
+  B:0098H.1       PUBLIC        TI
+  C:00FBH         PUBLIC        main
+  D:0099H         PUBLIC        SBUF
+  D:0087H         PUBLIC        PCON
+  D:0098H         PUBLIC        SCON
+  C:00D4H         PUBLIC        Uart_init
+  D:0089H         PUBLIC        TMOD
+  D:0088H         PUBLIC        TCON
+  D:0008H         PUBLIC        list
+  B:00A8H.0       PUBLIC        EX0
+  B:0088H.0       PUBLIC        IT0
+  D:008DH         PUBLIC        TH1
+  D:008BH         PUBLIC        TL1
+  D:000EH         PUBLIC        sum
+  B:0088H.6       PUBLIC        TR1
+  D:00C8H         PUBLIC        T2CON
+  C:0092H         PUBLIC        Ex0
+  D:00D0H         PUBLIC        PSW
+  -------         PROC          UART_INIT
+  C:00D4H         LINE#         8
+  C:00D4H         LINE#         9
+  C:00D4H         LINE#         10
+  C:00D7H         LINE#         11
+  C:00DAH         LINE#         12
+  C:00DDH         LINE#         13
+  C:00E0H         LINE#         14
+  C:00E2H         LINE#         15
+  C:00E5H         LINE#         16
+  C:00E7H         LINE#         17
+  C:00E9H         LINE#         18
+  C:00EBH         LINE#         19
+  C:00EDH         LINE#         20
+  -------         ENDPROC       UART_INIT
+  -------         PROC          MAIN
+  C:00FBH         LINE#         23
+  C:00FBH         LINE#         24
+  C:00FBH         LINE#         25
+  C:00FEH         LINE#         26
+  -------         ENDPROC       MAIN
+  -------         PROC          EX0
+  -------         DO            
+  D:0006H         SYMBOL        i
+  -------         ENDDO         
+  C:0092H         LINE#         28
+  C:009FH         LINE#         31
+  C:00A7H         LINE#         32
+  C:00AAH         LINE#         33
+  C:00AAH         LINE#         34
+  C:00B1H         LINE#         35
+  C:00B4H         LINE#         36
+  C:00B6H         LINE#         37
+  C:00C1H         LINE#         38
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  04/14/2019  18:10:46  PAGE 3
+
+
+  C:00C4H         LINE#         39
+  C:00C7H         LINE#         40
+  C:00C9H         LINE#         41
+  -------         ENDPROC       EX0
+  -------         ENDMOD        ____
+
+Program Size: data=17.0 xdata=0 code=256
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

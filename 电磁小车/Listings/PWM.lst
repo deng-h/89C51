@@ -1,0 +1,79 @@
+C51 COMPILER V9.59.0.0   PWM                                                               06/05/2019 00:21:49 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE PWM
+OBJECT MODULE PLACED IN .\Objects\PWM.obj
+COMPILER INVOKED BY: C:\Program Files (x86)\Keil\uVision5\C51\BIN\C51.EXE PWM.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXT
+                    -END PRINT(.\Listings\PWM.lst) OBJECT(.\Objects\PWM.obj)
+
+line level    source
+
+   1          #include "STC15Fxxxx.h"
+   2          #include "STDEF.h"
+   3          
+   4          #define CCP_S0 0x10
+   5          #define CCP_S1 0x20
+   6          
+   7          void PWM_INIT(void)
+   8          {
+   9   1              ACC = AUXR1;
+  10   1              ACC &= ~(CCP_S0 | CCP_S1);
+  11   1              ACC |= CCP_S0;
+  12   1              AUXR1 = ACC;
+  13   1              
+  14   1      //      AUXR1 &= 0xCF;  //choose I/O output series (P3.6/P3.5)
+  15   1              CCON   = 0;             //initialize CCON, including stoping PCA counter & resetting overflow flag
+  16   1              CL     = 0;
+  17   1              CH     = 0;             //initialize counter CH & CL
+  18   1              
+  19   1              CMOD   = 0x02;  //set PCA timer source (SYSclk/2)
+  20   1                                              //disable PCA timer overflow interruption
+  21   1              
+  22   1              PCA_PWM0 = 0x00;                        //PCA module 0 work as 8 bit mode
+  23   1      //      CCAP0H = CCAP0L = 26;           //duty ratio is 90%
+  24   1              CCAPM0 = 0x42;
+  25   1              
+  26   1              PCA_PWM1 = 0x00;                        //PCA module 1 work as 8 bit mode
+  27   1      //      CCAP1H = CCAP1L = 51;           //duty ratio is 80%
+  28   1              CCAPM1 = 0x42;
+  29   1              
+  30   1      //      PCA_PWM2 = 0x00;                        //PCA module 2 work as 8 bit mode
+  31   1      //      CCAP0H = CCAP0L = 77;           //duty ratio is 70%
+  32   1      //      CCAPM0 = 0x42;
+  33   1      
+  34   1              CR = 1;         //enable PCA timer
+  35   1      
+  36   1      }
+  37          
+  38          void PWM_Out (uchar channal , uchar duty)
+  39          {
+  40   1              uchar value;
+  41   1              value = 256 - duty*256/100;
+  42   1              
+  43   1              if (channal == 0)
+  44   1              {
+  45   2                      CCAP0H = CCAP0L = value;
+  46   2              }
+  47   1              
+  48   1              if (channal == 1)
+  49   1              {
+  50   2                      CCAP1H = CCAP1L = value;
+  51   2              }
+  52   1      }
+  53          
+
+C51 COMPILER V9.59.0.0   PWM                                                               06/05/2019 00:21:49 PAGE 2   
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     67    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,166 @@
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                    04/14/2019  17:50:42  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.22.2.0, INVOKED BY:
+C:\KEIL_V5\C51\BIN\BL51.EXE .\Objects\模板.obj TO .\Objects\模板 PRINT (.\Listings\模板.m51) RAMSIZE (256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  .\Objects\模板.obj (____)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C_STARTUP)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C?CCASE)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C_INIT)
+
+
+LINK MAP OF MODULE:  .\Objects\模板 (____)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            DATA    0008H     0012H     UNIT         ?DT?____
+            IDATA   001AH     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+            CODE    0003H     0016H     UNIT         ?PR?UART_INIT?____
+                    0019H     000AH                  *** GAP ***
+            CODE    0023H     0003H     ABSOLUTE     
+            CODE    0026H     008CH     UNIT         ?C_C51STARTUP
+            CODE    00B2H     0082H     UNIT         ?PR?_DISPLAY?____
+            CODE    0134H     0028H     UNIT         ?PR?UART?____
+            CODE    015CH     0026H     UNIT         ?C?LIB_CODE
+            CODE    0182H     0013H     UNIT         ?C_INITSEG
+            CODE    0195H     000EH     UNIT         ?PR?MAIN?____
+
+
+
+OVERLAY MAP OF MODULE:   .\Objects\模板 (____)
+
+
+SEGMENT
+  +--> CALLED SEGMENT
+---------------------
+?PR?UART?____
+  +--> ?PR?_DISPLAY?____
+
+*** NEW ROOT ***************************************************
+
+?C_C51STARTUP
+  +--> ?PR?MAIN?____
+  +--> ?C_INITSEG
+
+?PR?MAIN?____
+  +--> ?PR?UART_INIT?____
+
+
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  04/14/2019  17:50:42  PAGE 2
+
+
+
+SYMBOL TABLE OF MODULE:  .\Objects\模板 (____)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        ____
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0080H         PUBLIC        P0
+  D:0090H         PUBLIC        P1
+  D:00A0H         PUBLIC        P2
+  D:00B0H         PUBLIC        P3
+  B:00A8H.7       PUBLIC        EA
+  D:00A8H         PUBLIC        IE
+  B:00A8H.4       PUBLIC        ES
+  D:00B8H         PUBLIC        IP
+  B:0098H.0       PUBLIC        RI
+  C:0134H         PUBLIC        Uart
+  C:0195H         PUBLIC        main
+  D:0099H         PUBLIC        SBUF
+  D:0087H         PUBLIC        PCON
+  D:0098H         PUBLIC        SCON
+  C:0003H         PUBLIC        Uart_init
+  D:0089H         PUBLIC        TMOD
+  D:0088H         PUBLIC        TCON
+  D:0008H         PUBLIC        list
+  D:008DH         PUBLIC        TH1
+  D:008BH         PUBLIC        TL1
+  B:0088H.6       PUBLIC        TR1
+  C:00B2H         PUBLIC        _Display
+  D:0018H         PUBLIC        a
+  B:00A0H.2       PUBLIC        LSA
+  B:00A0H.3       PUBLIC        LSB
+  B:00A0H.4       PUBLIC        LSC
+  D:00C8H         PUBLIC        T2CON
+  D:00D0H         PUBLIC        PSW
+  -------         PROC          UART_INIT
+  C:0003H         LINE#         13
+  C:0003H         LINE#         14
+  C:0003H         LINE#         15
+  C:0006H         LINE#         16
+  C:0009H         LINE#         17
+  C:000CH         LINE#         18
+  C:000FH         LINE#         19
+  C:0011H         LINE#         20
+  C:0014H         LINE#         21
+  C:0016H         LINE#         22
+  C:0018H         LINE#         23
+  -------         ENDPROC       UART_INIT
+  -------         PROC          _DISPLAY
+  D:0007H         SYMBOL        i
+  C:00B2H         LINE#         25
+  C:00B2H         LINE#         26
+  C:00B2H         LINE#         27
+  C:00B8H         LINE#         28
+  C:00F0H         LINE#         29
+  C:00F0H         LINE#         30
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  04/14/2019  17:50:42  PAGE 3
+
+
+  C:00F4H         LINE#         31
+  C:00F8H         LINE#         32
+  C:00FCH         LINE#         33
+  C:0100H         LINE#         34
+  C:0104H         LINE#         35
+  C:0108H         LINE#         36
+  C:010CH         LINE#         37
+  C:0110H         LINE#         38
+  C:0114H         LINE#         39
+  C:0118H         LINE#         40
+  C:011CH         LINE#         41
+  C:0120H         LINE#         42
+  C:0124H         LINE#         43
+  C:0128H         LINE#         44
+  C:012CH         LINE#         45
+  C:0130H         LINE#         46
+  C:0133H         LINE#         48
+  C:0133H         LINE#         49
+  -------         ENDPROC       _DISPLAY
+  -------         PROC          MAIN
+  C:0195H         LINE#         51
+  C:0195H         LINE#         52
+  C:0195H         LINE#         53
+  C:0198H         LINE#         54
+  C:019EH         LINE#         55
+  C:01A1H         LINE#         56
+  -------         ENDPROC       MAIN
+  -------         PROC          UART
+  C:0134H         LINE#         59
+  C:0143H         LINE#         61
+  C:0145H         LINE#         62
+  C:014CH         LINE#         63
+  C:014FH         LINE#         64
+  -------         ENDPROC       UART
+  -------         ENDMOD        ____
+
+  -------         MODULE        ?C?CCASE
+  C:015CH         PUBLIC        ?C?CCASE
+  -------         ENDMOD        ?C?CCASE
+
+Program Size: data=27.0 xdata=0 code=409
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

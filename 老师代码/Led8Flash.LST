@@ -1,0 +1,56 @@
+C51 COMPILER V9.52.0.0   LED8FLASH                                                         04/13/2018 14:59:55 PAGE 1   
+
+
+C51 COMPILER V9.52.0.0, COMPILATION OF MODULE LED8FLASH
+OBJECT MODULE PLACED IN Led8Flash.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE Led8Flash.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          #include <REG51.H>
+   2          #include "stdint.h"
+   3          #include "LedShift.h"
+   4          //-----------------------------------------------
+   5          //#define FOSC 12000000L
+   6          
+   7          //#define T10MS (65536-10000) 
+   8          #define T10MS_H 0xD8
+   9          #define T10MS_L 0xf0
+  10          
+  11          sfr AUXR = 0x8e; //Auxiliary register
+  12          //sbit P20 = P2^0;
+  13          
+  14          //-----------------------------------------------
+  15          /* Timer0 interrupt routine */
+  16          
+  17          
+  18          //-----------------------------------------------
+  19          /* main program */
+  20          void main()
+  21          {
+  22   1              TMOD = 0x00;        //·½Ê½0
+  23   1              TL0 = T10MS_L;        //??????
+  24   1              TH0 = T10MS_H;
+  25   1              TR0 = 1; //???0????
+  26   1              ET0 = 1; //?????0??
+  27   1              EA = 1;
+  28   1              while (1)
+  29   1              {
+  30   2                      P2=~(1<<GetLedBit());
+  31   2              }
+  32   1      }
+  33          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     34    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,110 @@
+/*
+规定S2为上，S10为下，S5为左，S7为右
+*/
+#include <reg52.h>
+#include <intrins.h>
+#include <stdlib.h>
+typedef unsigned int u16;
+typedef unsigned char u8;
+sbit RCLK_=P3^5;
+sbit SRCLK=P3^6;
+sbit SER=P3^4;
+u16 key[]={0,0,0,0};
+u8 code point[][2]={{0x7f,0x80},{0xbf,0x80},{0xdf,0x80},{0xef,0x80},{0xf7,0x80},{0xfb,0x80},{0xfd,0x80},{0xfe,0x80},
+										{0x7f,0x40},{0xbf,0x40},{0xdf,0x40},{0xef,0x40},{0xf7,0x40},{0xfb,0x40},{0xfd,0x40},{0xfe,0x40},
+										{0x7f,0x20},{0xbf,0x20},{0xdf,0x20},{0xef,0x20},{0xf7,0x20},{0xfb,0x20},{0xfd,0x20},{0xfe,0x20},
+										{0x7f,0x10},{0xbf,0x10},{0xdf,0x10},{0xef,0x10},{0xf7,0x10},{0xfb,0x10},{0xfd,0x10},{0xfe,0x10},
+										{0x7f,0x08},{0xbf,0x08},{0xdf,0x08},{0xef,0x08},{0xf7,0x08},{0xfb,0x08},{0xfd,0x08},{0xfe,0x08},
+										{0x7f,0x04},{0xbf,0x04},{0xdf,0x04},{0xef,0x04},{0xf7,0x04},{0xfb,0x04},{0xfd,0x04},{0xfe,0x04},
+										{0x7f,0x02},{0xbf,0x02},{0xdf,0x02},{0xef,0x02},{0xf7,0x02},{0xfb,0x02},{0xfd,0x02},{0xfe,0x02},
+										{0x7f,0x01},{0xbf,0x01},{0xdf,0x01},{0xef,0x01},{0xf7,0x01},{0xfb,0x01},{0xfd,0x01},{0xfe,0x01}};
+void delay(u16 i)
+{
+	while(i--);
+}
+void hc595byte(u8 dat)   //作用是给点阵的阳极高低电平
+{
+	u16 i;
+	RCLK_=0;
+	SRCLK=0;
+	for(i=0;i<8;i++)   //一位位将data送入移位寄存器，先高位，后低位
+	{
+		SER=dat>>7;   //取最高位
+		dat=dat<<1;   //移去最高位，最低位补0
+		SRCLK=1;   //移位寄存器，产生一个上升沿，将SER的数据移入移位寄存器
+		_nop_();   //延时
+		_nop_();
+		SRCLK=0;   //归零，以便再次产生上升沿
+	}
+	RCLK_=1;   //存储寄存器产生上升沿，将SER已移入的数据送给输出端
+}
+
+u16 key_press()     //检测按键是否被按下，若按下，返回方向，0-上，1-下，2-左，3-右
+{
+	u16 i,direct=-1;
+	P1=0xf0;      //判断上下键
+	if(P1!=0xf0)
+	{
+		delay(100);
+		switch(P1)
+		{
+			case(0x70):key[0]=1;break;  //检测到S2键
+			case(0xd0):key[1]=1;break; //检测到S10键
+		}
+	}
+	P1=0x2f;      //判断左右键，2f中的2是为了阻止蜂鸣器响
+	if(P1!=0x2f)
+	{
+		delay(100);
+		switch(P1)
+		{
+			case(0x27):key[2]=1;break; //检测到S5键
+			case(0x2d):key[3]=1;break;//检测到S7键
+		}
+	}
+
+	delay(5000);  //!!!!!!!!!!!!
+	delay(5000);	//延时！！！如果不延时，在很短时间内此函数一直有效，要有人能分辨的时间间隔
+	delay(5000);  //!!!!!!!!!!
+	for(i=0;i<4;i++)
+	{
+		if(key[i]==1)
+		{
+			direct=i;
+			break;
+		}
+	}
+	return direct;
+}
+void open_point(u16 pos)  //传递某一点在点阵中的位置，点亮某一点
+{
+	P0=point[pos][0];
+	hc595byte(point[pos][1]);
+}
+u16 move(u16 direct,u16 position)  //形参键盘数组和位置数组
+{
+	switch(direct)
+	{
+		case 0:position-=8;break;
+		case 1:position+=8;break;
+		case 2:position-=1;break;
+		case 3:position+=1;break;
+	}
+	return position;
+}
+
+void main()
+{
+	u16 p=20;
+	open_point(p);
+	while(1)
+	{
+		switch(key_press())
+		{
+			case 0:open_point(move(0,p));p-=8;key[0]=0;break;
+			case 1:open_point(move(1,p));p+=8;key[1]=0;break;
+			case 2:open_point(move(2,p));p-=1;key[2]=0;break;
+			case 3:open_point(move(3,p));p+=1;key[3]=0;break;
+		}
+	}
+}

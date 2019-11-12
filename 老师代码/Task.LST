@@ -1,0 +1,36 @@
+C51 COMPILER V9.59.0.0   TASK                                                              05/20/2019 21:08:44 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE TASK
+OBJECT MODULE PLACED IN Task.OBJ
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE Task.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND TABS(2)
+
+line level    source
+
+   1          #include "ledshift.h"
+   2          #include "led7seg.h"
+   3          
+   4          
+   5          void PeriodTask5ms(void)
+   6          {
+   7   1        Led7Seg_Flush();
+   8   1      }
+   9          
+  10          void PeriodTask1s(void)
+  11          {
+  12   1        //LedShift();
+  13   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =      4    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

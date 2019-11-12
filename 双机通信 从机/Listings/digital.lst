@@ -1,0 +1,50 @@
+C51 COMPILER V9.59.0.0   DIGITAL                                                           04/21/2019 12:27:08 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE DIGITAL
+OBJECT MODULE PLACED IN .\Objects\digital.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE digital.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\d
+                    -igital.lst) TABS(2) OBJECT(.\Objects\digital.obj)
+
+line level    source
+
+   1          
+   2          
+   3          //数码管驱动.c文件
+   4          
+   5          #include <reg52.h>
+   6          #include "digital.h"
+   7          char list[]={0x3f,0x06,0x5b,0x4f,0x66,0x6d,0x7d,0x07,0x7f,0x6f};
+   8          int count=1;
+   9            void display()
+  10          {
+  11   1        switch(count)
+  12   1        {
+  13   2          case 0:P0=list[0];break;
+  14   2          case 1:P0=list[1];break;
+  15   2          case 2:P0=list[2];break;
+  16   2          case 3:P0=list[3];break;
+  17   2          case 4:P0=list[4];break;
+  18   2          case 5:P0=list[5];break;
+  19   2          case 6:P0=list[6];break;
+  20   2          case 7:P0=list[7];break;
+  21   2          case 8:P0=list[8];break;
+  22   2          case 9:P0=list[9];break;
+  23   2        }
+  24   1        count++;
+  25   1        if (count==10) count=0;
+  26   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    115    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     12    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

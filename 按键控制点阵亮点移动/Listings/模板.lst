@@ -1,0 +1,140 @@
+C51 COMPILER V9.59.0.0   ____                                                              05/24/2019 16:26:48 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE ____
+OBJECT MODULE PLACED IN .\Objects\模板.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE 模板.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\模板
+                    -.lst) TABS(2) OBJECT(.\Objects\模板.obj)
+
+line level    source
+
+   1          /*
+   2          规定S2为上，S10为下，S5为左，S7为右
+   3          */
+   4          #include <reg52.h>
+   5          #include <intrins.h>
+   6          #include <stdlib.h>
+   7          typedef unsigned int u16;
+   8          typedef unsigned char u8;
+   9          sbit RCLK_=P3^5;
+  10          sbit SRCLK=P3^6;
+  11          sbit SER=P3^4;
+  12          u16 key[]={0,0,0,0};
+  13          u8 code point[][2]={{0x7f,0x80},{0xbf,0x80},{0xdf,0x80},{0xef,0x80},{0xf7,0x80},{0xfb,0x80},{0xfd,0x80},{0
+             -xfe,0x80},
+  14                              {0x7f,0x40},{0xbf,0x40},{0xdf,0x40},{0xef,0x40},{0xf7,0x40},{0xfb,0x40},{0xfd,0x40},{0xfe,0x40},
+  15                              {0x7f,0x20},{0xbf,0x20},{0xdf,0x20},{0xef,0x20},{0xf7,0x20},{0xfb,0x20},{0xfd,0x20},{0xfe,0x20},
+  16                              {0x7f,0x10},{0xbf,0x10},{0xdf,0x10},{0xef,0x10},{0xf7,0x10},{0xfb,0x10},{0xfd,0x10},{0xfe,0x10},
+  17                              {0x7f,0x08},{0xbf,0x08},{0xdf,0x08},{0xef,0x08},{0xf7,0x08},{0xfb,0x08},{0xfd,0x08},{0xfe,0x08},
+  18                              {0x7f,0x04},{0xbf,0x04},{0xdf,0x04},{0xef,0x04},{0xf7,0x04},{0xfb,0x04},{0xfd,0x04},{0xfe,0x04},
+  19                              {0x7f,0x02},{0xbf,0x02},{0xdf,0x02},{0xef,0x02},{0xf7,0x02},{0xfb,0x02},{0xfd,0x02},{0xfe,0x02},
+  20                              {0x7f,0x01},{0xbf,0x01},{0xdf,0x01},{0xef,0x01},{0xf7,0x01},{0xfb,0x01},{0xfd,0x01},{0xfe,0x01}}
+             -;
+  21          void delay(u16 i)
+  22          {
+  23   1        while(i--);
+  24   1      }
+  25          void hc595byte(u8 dat)   //作用是给点阵的阳极高低电平
+  26          {
+  27   1        u16 i;
+  28   1        RCLK_=0;
+  29   1        SRCLK=0;
+  30   1        for(i=0;i<8;i++)   //一位位将data送入移位寄存器，先高位，后低位
+  31   1        {
+  32   2          SER=dat>>7;   //取最高位
+  33   2          dat=dat<<1;   //移去最高位，最低位补0
+  34   2          SRCLK=1;   //移位寄存器，产生一个上升沿，将SER的数据移入移位寄存器
+  35   2          _nop_();   //延时
+  36   2          _nop_();
+  37   2          SRCLK=0;   //归零，以便再次产生上升沿
+  38   2        }
+  39   1        RCLK_=1;   //存储寄存器产生上升沿，将SER已移入的数据送给输出端
+  40   1      }
+  41          
+  42          u16 key_press()     //检测按键是否被按下，若按下，返回方向，0-上，1-下，2-左，3-右
+  43          {
+  44   1        u16 i,direct=-1;
+  45   1        P1=0xf0;      //判断上下键
+  46   1        if(P1!=0xf0)
+  47   1        {
+  48   2          delay(100);
+  49   2          switch(P1)
+  50   2          {
+  51   3            case(0x70):key[0]=1;break;  //检测到S2键
+  52   3            case(0xd0):key[1]=1;break; //检测到S10键
+C51 COMPILER V9.59.0.0   ____                                                              05/24/2019 16:26:48 PAGE 2   
+
+  53   3          }
+  54   2        }
+  55   1        P1=0x2f;      //判断左右键，2f中的2是为了阻止蜂鸣器响
+  56   1        if(P1!=0x2f)
+  57   1        {
+  58   2          delay(100);
+  59   2          switch(P1)
+  60   2          {
+  61   3            case(0x27):key[2]=1;break; //检测到S5键
+  62   3            case(0x2d):key[3]=1;break;//检测到S7键
+  63   3          }
+  64   2        }
+  65   1      
+  66   1        delay(5000);  //!!!!!!!!!!!!
+  67   1        delay(5000);  //延时！！！如果不延时，在很短时间内此函数一直有效，要有人能分辨的时间间隔
+  68   1        delay(5000);  //!!!!!!!!!!
+  69   1        for(i=0;i<4;i++)
+  70   1        {
+  71   2          if(key[i]==1)
+  72   2          {
+  73   3            direct=i;
+  74   3            break;
+  75   3          }
+  76   2        }
+  77   1        return direct;
+  78   1      }
+  79          void open_point(u16 pos)  //传递某一点在点阵中的位置，点亮某一点
+  80          {
+  81   1        P0=point[pos][0];
+  82   1        hc595byte(point[pos][1]);
+  83   1      }
+  84          u16 move(u16 direct,u16 position)  //形参键盘数组和位置数组
+  85          {
+  86   1        switch(direct)
+  87   1        {
+  88   2          case 0:position-=8;break;
+  89   2          case 1:position+=8;break;
+  90   2          case 2:position-=1;break;
+  91   2          case 3:position+=1;break;
+  92   2        }
+  93   1        return position;
+  94   1      }
+  95          
+  96          void main()
+  97          {
+  98   1        u16 p=20;
+  99   1        open_point(p);
+ 100   1        while(1)
+ 101   1        {
+ 102   2          switch(key_press())
+ 103   2          {
+ 104   3            case 0:open_point(move(0,p));p-=8;key[0]=0;break;
+ 105   3            case 1:open_point(move(1,p));p+=8;key[1]=0;break;
+ 106   3            case 2:open_point(move(2,p));p-=1;key[2]=0;break;
+ 107   3            case 3:open_point(move(3,p));p+=1;key[3]=0;break;
+ 108   3          }
+ 109   2        }
+ 110   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    430    ----
+C51 COMPILER V9.59.0.0   ____                                                              05/24/2019 16:26:48 PAGE 3   
+
+   CONSTANT SIZE    =    128    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      8       2
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

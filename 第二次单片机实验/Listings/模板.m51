@@ -1,0 +1,113 @@
+BL51 BANKED LINKER/LOCATER V6.22                                                        10/19/2019  13:43:30  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.22, INVOKED BY:
+D:\KEIL_V5MDK\C51\BIN\BL51.EXE .\Objects\模板.obj TO .\Objects\模板 PRINT (.\Listings\模板.m51) RAMSIZE (256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  .\Objects\模板.obj (____)
+  D:\KEIL_V5MDK\C51\LIB\C51S.LIB (?C_STARTUP)
+  D:\KEIL_V5MDK\C51\LIB\C51S.LIB (?C_INIT)
+
+
+LINK MAP OF MODULE:  .\Objects\模板 (____)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            DATA    0008H     000EH     UNIT         ?DT?____
+            IDATA   0016H     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+            CODE    0003H     008CH     UNIT         ?C_C51STARTUP
+            CODE    008FH     0067H     INBLOCK      ?PR?MAIN?____
+            CODE    00F6H     0017H     UNIT         ?C_INITSEG
+
+
+
+OVERLAY MAP OF MODULE:   .\Objects\模板 (____)
+
+
+SEGMENT
+  +--> CALLED SEGMENT
+---------------------
+?C_C51STARTUP
+  +--> ?PR?MAIN?____
+  +--> ?C_INITSEG
+
+
+
+SYMBOL TABLE OF MODULE:  .\Objects\模板 (____)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        ____
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0090H         PUBLIC        P1
+  D:00A0H         PUBLIC        P2
+  D:00B0H         PUBLIC        P3
+  D:00A8H         PUBLIC        IE
+  D:00B8H         PUBLIC        IP
+  D:0008H         PUBLIC        flag
+  C:008FH         PUBLIC        main
+BL51 BANKED LINKER/LOCATER V6.22                                                      10/19/2019  13:43:30  PAGE 2
+
+
+  D:000AH         PUBLIC        count
+  D:0098H         PUBLIC        SCON
+  D:0089H         PUBLIC        TMOD
+  D:0088H         PUBLIC        TCON
+  D:000CH         PUBLIC        dat
+  B:0088H.5       PUBLIC        TF0
+  D:008CH         PUBLIC        TH0
+  D:008AH         PUBLIC        TL0
+  B:0088H.4       PUBLIC        TR0
+  D:00C8H         PUBLIC        T2CON
+  D:0014H         PUBLIC        i
+  D:00D0H         PUBLIC        PSW
+  -------         PROC          MAIN
+  C:008FH         LINE#         5
+  C:008FH         LINE#         6
+  C:008FH         LINE#         7
+  C:0092H         LINE#         8
+  C:0095H         LINE#         9
+  C:0098H         LINE#         10
+  C:009AH         LINE#         11
+  C:009DH         LINE#         12
+  C:009DH         LINE#         13
+  C:009DH         LINE#         14
+  C:00A0H         LINE#         15
+  C:00A0H         LINE#         16
+  C:00A2H         LINE#         17
+  C:00A5H         LINE#         18
+  C:00A8H         LINE#         19
+  C:00B0H         LINE#         20
+  C:00B9H         LINE#         21
+  C:00B9H         LINE#         22
+  C:00BEH         LINE#         23
+  C:00C6H         LINE#         24
+  C:00C6H         LINE#         25
+  C:00CAH         LINE#         26
+  C:00CDH         LINE#         27
+  C:00CFH         LINE#         29
+  C:00CFH         LINE#         30
+  C:00D5H         LINE#         31
+  C:00E4H         LINE#         32
+  C:00E4H         LINE#         33
+  C:00F4H         LINE#         34
+  C:00F4H         LINE#         35
+  C:00F4H         LINE#         36
+  -------         ENDPROC       MAIN
+  -------         ENDMOD        ____
+
+Program Size: data=23.0 xdata=0 code=269
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

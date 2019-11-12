@@ -1,0 +1,64 @@
+C51 COMPILER V9.59.0.0   ADC                                                               06/05/2019 00:21:51 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE ADC
+OBJECT MODULE PLACED IN .\Objects\ADC.obj
+COMPILER INVOKED BY: C:\Program Files (x86)\Keil\uVision5\C51\BIN\C51.EXE ADC.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXT
+                    -END PRINT(.\Listings\ADC.lst) OBJECT(.\Objects\ADC.obj)
+
+line level    source
+
+   1          #include "STC15Fxxxx.h"
+   2          #include "STDEF.h"
+   3          
+   4          
+   5          #define ADC_Power 0x80     //ADC电源控制位
+   6          #define ADC_Flag 0x10      //ADC完成标志
+   7          #define ADC_Start 0x08     //ADC启动
+   8          
+   9          
+  10          #define ADC_Speed_LL 0x00   //540个时钟
+  11          #define ADC_Speed_L 0x20    //360个时钟
+  12          #define ADC_Speed_H 0x40    //180个时钟
+  13          #define ADC_Speed_HH 0x60   // 90个时钟
+  14          
+  15          uchar Channel_Sel;
+  16          uchar AD_Result[8];
+  17          
+  18          void ADC_INIT(void)
+  19          {
+  20   1              P1ASF = 0xFF;             //设置P1口为ADC输入
+  21   1              ADC_RES = 0;                    //清除结果寄存器
+  22   1              Channel_Sel=0;
+  23   1              ADC_CONTR = ADC_Power | ADC_Speed_LL | ADC_Start | Channel_Sel;
+  24   1      }
+  25          
+  26          /*----------------------------
+  27          ADC中断
+  28          ----------------------------*/
+  29          void ADC_ISR() interrupt 5 using 1
+  30          {
+  31   1              ADC_CONTR &= ~ADC_Flag;     
+  32   1              AD_Result[Channel_Sel]=ADC_RES;
+  33   1              Channel_Sel=(Channel_Sel+1)&0x07;
+  34   1              ADC_CONTR = ADC_Power | ADC_Speed_LL | ADC_Start | Channel_Sel;
+  35   1      }
+  36          
+  37          uchar ADC_Read(uchar channel)
+  38          {
+  39   1              return AD_Result[channel];
+  40   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     55    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      9    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

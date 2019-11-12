@@ -1,0 +1,3 @@
+".\Objects\stc.obj" 
+TO ".\Objects\stc" 
+PRINT(".\Listings\stc.m51") RAMSIZE(256) 

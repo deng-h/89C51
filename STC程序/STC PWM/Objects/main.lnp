@@ -1,0 +1,6 @@
+".\Objects\main.obj",
+".\Objects\pwm.obj",
+".\Objects\adc.obj",
+".\Objects\uart.obj" 
+TO ".\Objects\main" 
+PRINT(".\Listings\main.m51") RAMSIZE(256) 

@@ -1,0 +1,48 @@
+#include <REG51.H>
+#include <intrins.h>
+                //            7    6    5    4    3    2    1    0     Reset Value
+sfr P5 = 0xC8;  //6 bit Port5 P5.7 P5.6 P5.5 P5.4 P5.3 P5.2 P5.1 P5.0  xxx1,1111
+sfr P5M0 = 0xCA;                                                    // 0000,0000
+sfr P5M1 = 0xC9;                                                    // 0000,0000
+sfr P4 = 0xC0;  //8 bit Port4 P4.7 P4.6 P4.5 P4.4 P4.3 P4.2 P4.1 P4.0  1111,1111
+sfr P4M0 = 0xB4;                                                    // 0000,0000
+sfr P4M1 = 0xB3;                                                    // 0000,0000
+sbit P40 = P4^0;
+sbit P41 = P4^1;
+sbit P42 = P4^2;
+sbit P43 = P4^3;
+sbit P44 = P4^4;
+sbit P45 = P4^5;
+sbit P46 = P4^6;
+sbit P47 = P4^7;
+sbit P50 = P5^0;
+sbit P51 = P5^1;
+sbit P52 = P5^2;
+sbit P53 = P5^3;
+sbit P54 = P5^4;
+sbit P55 = P5^5;
+
+void delay(void);
+void main(void)
+{
+	while(1)
+	{
+		P55 = 0;
+		delay();
+		delay();
+		P55 = 1;
+		delay();
+		delay();
+	}
+}
+void delay(void)
+{
+	unsigned int i = 0;
+	for(i=60000;i>0;i--)
+	{
+		_nop_();_nop_();_nop_();_nop_();_nop_();_nop_();_nop_();_nop_();_nop_();_nop_();
+		_nop_();_nop_();_nop_();_nop_();_nop_();_nop_();_nop_();_nop_();_nop_();_nop_();
+		_nop_();_nop_();_nop_();_nop_();_nop_();_nop_();_nop_();_nop_();_nop_();_nop_();
+		_nop_();_nop_();_nop_();_nop_();_nop_();_nop_();_nop_();_nop_();_nop_();_nop_();
+	}
+}

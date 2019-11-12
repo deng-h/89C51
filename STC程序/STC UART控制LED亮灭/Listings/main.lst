@@ -1,0 +1,59 @@
+C51 COMPILER V9.59.0.0   MAIN                                                              05/03/2019 16:35:13 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main
+                    -.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <STC15F2K60S2.h>
+   2          typedef unsigned int uint;
+   3          typedef unsigned char uchar;
+   4          sbit LED = P5^5;
+   5          uint count=0;
+   6          void UartInit(void)   //9600bps@11.0592MHz
+   7          {
+   8   1        SCON = 0x50;    //8位数据,可变波特率
+   9   1        AUXR |= 0x40;   //定时器1时钟为Fosc,即1T
+  10   1        AUXR &= 0xFE;   //串口1选择定时器1为波特率发生器
+  11   1        TMOD &= 0x0F;   //设定定时器1为16位自动重装方式
+  12   1        TL1 = 0xE0;   //设定定时初值
+  13   1        TH1 = 0xFE;   //设定定时初值
+  14   1        ET1 = 0;    //禁止定时器1中断
+  15   1        TR1 = 1;    //启动定时器1
+  16   1      }
+  17          
+  18          void main()
+  19          {
+  20   1        UartInit();
+  21   1        EA = 1;
+  22   1        ES = 1;
+  23   1        while(1);
+  24   1      }
+  25          
+  26          void UART_Routine() interrupt 4
+  27          {
+  28   1        if(RI)
+  29   1        {
+  30   2          RI = 0;
+  31   2          count++;
+  32   2          if(count%2==0) LED=1;
+  33   2          else LED=0;
+  34   2        }
+  35   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     59    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      2    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

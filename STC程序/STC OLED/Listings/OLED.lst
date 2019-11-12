@@ -1,0 +1,465 @@
+C51 COMPILER V9.54   OLED                                                                  09/18/2019 18:45:58 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE OLED
+OBJECT MODULE PLACED IN .\Objects\OLED.obj
+COMPILER INVOKED BY: D:\Keil_v5MDK\C51\BIN\C51.EXE OLED.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\O
+                    -LED.lst) TABS(2) OBJECT(.\Objects\OLED.obj)
+
+line level    source
+
+   1          #include "OLED.h"
+   2          #include "charcode.h"
+   3          
+   4          #include <STC15F2K60S2.h>
+   5          static void OLED_WriteDat(uint8 data_t);
+   6          static void OLED_WriteCmd(uint8 cmd);
+   7          static void OLED_SetPos(uint8 x, uint8 y);
+   8          static void OLED_PinInit(void);
+   9          static void OLED_DLY_ms(uint16 ms);
+  10          
+  11          /*!
+  12          *  描述       OLED显示屏清屏函数
+  13          *  参数       NewState       0x00为关OLED，0x01为开OLED
+  14          *  示例:       OLED_Cmd (0x00);
+  15          */
+  16          void OLED_Switch(char NewState)
+  17          {
+  18   1        if(NewState != 0) NewState = 1;
+  19   1        OLED_WriteCmd(0xAE | NewState);
+  20   1      }
+  21          
+  22          /*!
+  23          *  @描述       OLED显示屏清屏函数
+  24          *  @参数       color       0x00为全暗，0xff为全亮
+  25          *  示例:       OLED_ClearScreen (0x00);
+  26          */
+  27          void OLED_ClearScreen(uint8 color)
+  28          {
+  29   1        uint16 y,x; 
+  30   1        for(y=0; y < OLED_PAGE_MAX; y++)  //8页，每页128字节
+  31   1        {
+  32   2          OLED_WriteCmd(0xb0 + y);  //设置页地址
+  33   2          OLED_WriteCmd(0x01);   //设置8位起始列地址的低四位
+  34   2          OLED_WriteCmd(0x10);   //设置8位起始列地址的高四位
+  35   2          for(x=0; x < OLED_X_MAX; x++)
+  36   2            OLED_WriteDat(color);
+  37   2        }
+  38   1      }
+  39          
+  40          /*!
+  41          *  @描述       OLED初始化
+  42          *  示例:       OLED_Init ();
+  43          */
+  44          void OLED_Init (void)
+  45          {
+  46   1        P23=0;  //拉低,片选
+  47   1        OLED_PinInit();
+  48   1        
+  49   1        OLED_SCLH;  
+  50   1        OLED_RSTL; //初始化OLED
+  51   1        
+  52   1        OLED_DLY_ms(50);
+  53   1        OLED_RSTH;
+  54   1        
+C51 COMPILER V9.54   OLED                                                                  09/18/2019 18:45:58 PAGE 2   
+
+  55   1        OLED_Switch(0);//--turn off oled panel
+  56   1        OLED_WriteCmd(0x00);//---set low column address
+  57   1        OLED_WriteCmd(0x10);//---set high column address
+  58   1        OLED_WriteCmd(0x40);//--set start line address  Set Mapping RAM Display Start Line (0x00~0x3F)
+  59   1        OLED_WriteCmd(0x81);//--set contrast control register
+  60   1        OLED_WriteCmd(0xcf); // Set SEG Output Current Brightness
+  61   1        OLED_WriteCmd(0xa1);//--Set SEG/Column Mapping     //
+  62   1        OLED_WriteCmd(0xc8);//Set COM/Row Scan Direction  //
+  63   1        OLED_WriteCmd(0xa6);//--set normal display
+  64   1        OLED_WriteCmd(0xa8);//--set multiplex ratio(1 to 64)
+  65   1        OLED_WriteCmd(0x3f);//--1/64 duty
+  66   1        OLED_WriteCmd(0xd3);//-set display offset    Shift Mapping RAM Counter (0x00~0x3F)
+  67   1        OLED_WriteCmd(0x00);//-not offset
+  68   1        OLED_WriteCmd(0xd5);//--set display clock divide ratio/oscillator frequency
+  69   1        OLED_WriteCmd(0x80);//--set divide ratio, Set Clock as 100 Frames/Sec
+  70   1        OLED_WriteCmd(0xd9);//--set pre-charge period
+  71   1        OLED_WriteCmd(0xf1);//Set Pre-Charge as 15 Clocks & Discharge as 1 Clock
+  72   1        OLED_WriteCmd(0xda);//--set com pins hardware configuration
+  73   1        OLED_WriteCmd(0x12);
+  74   1        OLED_WriteCmd(0xdb);//--set vcomh
+  75   1        OLED_WriteCmd(0x40);//Set VCOM Deselect Level
+  76   1        OLED_WriteCmd(0x20);//-Set Page Addressing Mode (0x00/0x01/0x02)
+  77   1        OLED_WriteCmd(0x02);//
+  78   1        OLED_WriteCmd(0x8d);//--set Charge Pump enable/disable
+  79   1        OLED_WriteCmd(0x14);//--set(0x10) disable
+  80   1        OLED_WriteCmd(0xa4);// Disable Entire Display On (0xa4/0xa5)
+  81   1        OLED_WriteCmd(0xa6);// Disable Inverse Display On (0xa6/a7) 
+  82   1        OLED_Switch(1);//--turn on oled panel
+  83   1        OLED_ClearScreen(BLACK);
+  84   1        OLED_SetPos(0, 0);
+  85   1      }
+  86          
+  87          /*!
+  88          *  @描述       显示一个6x8的字符
+  89          *  @参数       x       显示位置的横坐标(0~127)
+  90          *  @参数       y       显示位置的纵坐标(0~7)
+  91          *  @参数       data1   待显示的字符
+  92          *  示例:       gpio_init (0, 0, 'H');    //在屏幕(0,0)位置显示 H
+  93          */
+  94          void OLED_P6x8Char(uint8 x, uint8 y, char ch)
+  95          {
+  96   1        uint8 c = 0, i = 0; 
+  97   1        c =ch-32;
+  98   1        if(x>126)
+  99   1        {
+ 100   2          x=0;
+ 101   2          y++;
+ 102   2        }
+ 103   1        OLED_SetPos(x,y);    
+ 104   1        for(i=0;i<6;i++)
+ 105   1        {     
+ 106   2          OLED_WriteDat(F6x8[c][i]);  
+ 107   2        }
+ 108   1        x+=6;
+ 109   1      }
+ 110          
+ 111          /*!
+ 112          *  @描述       显示一个6x8的字符串
+ 113          *  @参数       x       显示位置的横坐标(0~127)
+ 114          *  @参数       y       显示位置的纵坐标(0~7)
+ 115          *  @参数       data1   待显示的字符串
+ 116          *  示例:       gpio_init (0, 0, "HELLO");    //在屏幕(0,0)位置显示 HELLO
+C51 COMPILER V9.54   OLED                                                                  09/18/2019 18:45:58 PAGE 3   
+
+ 117          */
+ 118          void OLED_P6x8Str(uint8 x, uint8 y, const char *ch)
+ 119          {
+ 120   1        uint8 c = 0, i = 0, j = 0;      
+ 121   1        while (ch[j]!='\0')
+ 122   1        {    
+ 123   2          c =ch[j]-32;
+ 124   2          if(x>126)
+ 125   2          {
+ 126   3            x=0;
+ 127   3            y++;
+ 128   3          }
+ 129   2          OLED_SetPos(x,y);    
+ 130   2          for(i=0;i<6;i++)
+ 131   2          {     
+ 132   3            OLED_WriteDat(F6x8[c][i]);  
+ 133   3          }
+ 134   2          x+=6;
+ 135   2          j++;
+ 136   2        }
+ 137   1      }
+ 138          
+ 139          /*!
+ 140          *  @描述       显示一个6x8的整数数
+ 141          *  @参数       x       显示位置的横坐标(0~127)
+ 142          *  @参数       y       显示位置的纵坐标(0~7)
+ 143          *  @参数       data1   待显示的整数
+ 144          *  @参数       set     显示整数位位数，如果该参数带负号，则显示结果有符号
+ 145          *  示例:       gpio_init (0, 0, 123, 4);    //在屏幕(0,0)位置显示 0123
+ 146                         gpio_init (0, 0, -123, -3);    //在屏幕(0,0)位置显示 -123
+ 147          */
+ 148          void OLED_P6x8Int(uint8 x, uint8 y, int16 data1, int8 set)
+ 149          {
+ 150   1        uint8 result[7];
+ 151   1        if(data1<0)  //负数的情况
+ 152   1        {
+ 153   2          data1 *= -1;
+ 154   2          result[0] = '-';
+ 155   2        }
+ 156   1        else
+ 157   1        {
+ 158   2          result[0] = '+';
+ 159   2        }
+ 160   1        result[1] = (uint8)((data1%100000)/10000+48);
+ 161   1        result[2] = (uint8)((data1%10000)/1000+48);
+ 162   1        result[3] = (uint8)((data1%1000)/100+48);
+ 163   1        result[4] = (uint8)((data1%100)/10+48);
+ 164   1        result[5] = (uint8)(data1%10+48);
+ 165   1        result[6] = '\0';
+ 166   1        if(set < 0)
+ 167   1        {
+ 168   2          result[5 + set] = result[0];
+ 169   2          OLED_P6x8Str(x, y, (char *)&(result[5 + set]));
+ 170   2        }
+ 171   1        else if(set > 0)
+ 172   1        {
+ 173   2          OLED_P6x8Str(x, y, (char *)&(result[6 - set]));
+ 174   2        }
+ 175   1      }
+ 176          
+ 177          /*!
+ 178          *  @描述       显示一个6x8的浮点数
+C51 COMPILER V9.54   OLED                                                                  09/18/2019 18:45:58 PAGE 4   
+
+ 179          *  @参数       x       显示位置的横坐标(0~127)
+ 180          *  @参数       y       显示位置的纵坐标(0~7)
+ 181          *  @参数       data1   待显示的浮点数
+ 182          *  @参数       set     显示浮点数的整数位位数，如果该参数带负号，则显示结果有符号
+ 183          *  示例:       gpio_init (0, 0, 100.0/3, 2);    //在屏幕(0,0)位置显示 33.33
+ 184                         gpio_init (0, 0, 100.0/3, -2);    //在屏幕(0,0)位置显示 +33.33
+ 185          */
+ 186          void OLED_P6x8Flo(uint8 x, uint8 y, float data1, int8 set)
+ 187          {
+ 188   1        uint8 result[9];
+ 189   1        uint16 data2;
+ 190   1        if(data1<0)
+ 191   1        {     
+ 192   2          result[0] = '-';
+ 193   2          data1 *= -1;
+ 194   2        }
+ 195   1        else
+ 196   1        {
+ 197   2          result[0]='+';
+ 198   2        }
+ 199   1        data1 += 0.000001;
+ 200   1        data2 = (uint16)(data1*100);
+ 201   1        result[1] = (uint8)((data2%1000000)/100000+48);
+ 202   1        result[2] = (uint8)((data2%100000)/10000+48);
+ 203   1        result[3] = (uint8)((data2%10000)/1000+48);
+ 204   1        result[4] = (uint8)((data2%1000)/100+48);
+ 205   1        result[5] = '.';
+ 206   1        result[6] = (uint8)((data2%100)/10+48);
+ 207   1        result[7] = (uint8)(data2%10+48);
+ 208   1        result[8] = '\0';
+ 209   1        
+ 210   1        if(set < 0)
+ 211   1        {
+ 212   2          result[4 + set] = result[0];
+ 213   2          OLED_P6x8Str(x, y, (char *)&(result[4 + set]));
+ 214   2        }
+ 215   1        else if(set > 0)
+ 216   1        {
+ 217   2          OLED_P6x8Str(x, y, (char *)&(result[5 - set]));
+ 218   2        }
+ 219   1      }
+ 220          
+ 221          /*!
+ 222          *  @描述       显示一个8x16的标准ASCII字符
+ 223          *  @参数       x       显示位置的横坐标(0~127)
+ 224          *  @参数       y       显示位置的纵坐标(0~6)
+ 225          *  @参数       ch      待显示的字符
+ 226          *  示例:       gpio_init (0, 0, 'H');    //在屏幕(0,0)位置显示 H
+ 227          */
+ 228          void OLED_P8x16Char(uint8 x, uint8 y, char ch)
+ 229          {
+ 230   1        uint8 c = 0, i = 0;
+ 231   1        
+ 232   1        c = ch - 32;
+ 233   1        if(x > 120)
+ 234   1        {
+ 235   2          x=0;
+ 236   2          y++;
+ 237   2        }
+ 238   1        OLED_SetPos(x,y);
+ 239   1        for(i=0;i<8;i++)
+ 240   1        {
+C51 COMPILER V9.54   OLED                                                                  09/18/2019 18:45:58 PAGE 5   
+
+ 241   2          OLED_WriteDat(F8X16[c*16+i]);  //*16是因为一维数组
+ 242   2        }
+ 243   1        OLED_SetPos(x,y+1);
+ 244   1        for(i=0;i<8;i++)
+ 245   1        {
+ 246   2          OLED_WriteDat(F8X16[c*16+i+8]);
+ 247   2        }
+ 248   1        x+=8;
+ 249   1      }
+ 250          
+ 251          /*!
+ 252          *  @描述       显示一个8x16的标准ASCII字符串
+ 253          *  @参数       x       显示位置的横坐标(0~127)
+ 254          *  @参数       y       显示位置的纵坐标(0~6)
+ 255          *  @参数       ch      待显示的字符串
+ 256          *  示例:       gpio_init (0, 0, "HELLO");    //在屏幕(0,0)位置显示 HELLO
+ 257          */
+ 258          void OLED_P8x16Str(uint8 x, uint8 y, const char *ch)
+ 259          {
+ 260   1        uint8 c = 0, i = 0, j = 0;
+ 261   1        while (ch[j] != '\0')
+ 262   1        {    
+ 263   2          c = ch[j] - 32;
+ 264   2          if(x > 120)
+ 265   2          {
+ 266   3            x=0;
+ 267   3            y++;
+ 268   3          }
+ 269   2          OLED_SetPos(x,y);
+ 270   2          for(i=0;i<8;i++)
+ 271   2          {
+ 272   3            OLED_WriteDat(F8X16[c*16+i]);
+ 273   3          }
+ 274   2          OLED_SetPos(x,y+1);
+ 275   2          for(i=0;i<8;i++)
+ 276   2          {
+ 277   3            OLED_WriteDat(F8X16[c*16+i+8]);
+ 278   3          }
+ 279   2          x+=8;
+ 280   2          j++;
+ 281   2        }
+ 282   1      }
+ 283          
+ 284          /*!
+ 285          *  @描述       显示一个14x16的中文字符
+ 286          *  @参数       x       显示位置的横坐标(0~127)
+ 287          *  @参数       y       显示位置的纵坐标(0~6)
+ 288          *  @参数       ch      待显示的字符串
+ 289          *  示例:       gpio_init (0, 0, "你好");    //在屏幕(0,0)位置显示 你好
+ 290          *  注意        显示汉字时需要用文字取模软件取模字体，取模时设置为 宋体五号，纵向取模，字节倒叙，再添加至ch
+             -arcode.h中的Word14x16数组中方可使用
+ 291          */
+ 292          void OLED_P14x16CHCHAR(uint8 x, uint8 y, const char *ch)
+ 293          {
+ 294   1        uint8 wordnum, i;
+ 295   1        while(*ch != '\0')
+ 296   1        {
+ 297   2          if(x > 114)
+ 298   2          {
+ 299   3            x = 0;
+ 300   3            ++ y;
+ 301   3          }
+C51 COMPILER V9.54   OLED                                                                  09/18/2019 18:45:58 PAGE 6   
+
+ 302   2          OLED_SetPos(x, y);
+ 303   2          for(wordnum = 0; wordnum < sizeof(Word14x16)/31; ++wordnum)
+ 304   2          {
+ 305   3            if(((*ch & 0xff) == (Word14x16[wordnum].word_name[0] & 0xff)) && ((*(ch+1) & 0xff) == (Word14x16[wor
+             -dnum].word_name[1] & 0xff)))
+ 306   3            {
+ 307   4              for(i=0; i<14; i++)
+ 308   4              {
+ 309   5                OLED_WriteDat(Word14x16[wordnum].index[i]);
+ 310   5              }
+ 311   4              OLED_SetPos(x, y+1);
+ 312   4              for(i=14; i<28; i++)
+ 313   4              {
+ 314   5                OLED_WriteDat(Word14x16[wordnum].index[i]);
+ 315   5              }
+ 316   4              x += 14;
+ 317   4              ch += 2;
+ 318   4              break;
+ 319   4            }
+ 320   3          }
+ 321   2        }
+ 322   1      }
+ 323          
+ 324          /*!
+ 325          *  @描述       显示一个图片
+ 326          *  @参数       x0      显示位置的起点横坐标(0~127)
+ 327          *  @参数       y0      显示位置的起点纵坐标(0~7)
+ 328          *  @参数       x1      显示位置的起点横坐标(0~127)
+ 329          *  @参数       y1      显示位置的起点纵坐标(0~7)
+ 330          *  @参数       bmp     待显示的图片
+ 331          *  示例:       gpio_init (0, 0, 100， 6， bmp);    //在屏幕(0,0)位置显示一个大小为100 * 48 的图片
+ 332          *  注意:       显示图片时需要用图像取模软件取模，取模时设置为 数据水平，字节垂直，单色，最大尺寸128 * 64，
+             -字节内像素数据反序
+ 333          */
+ 334          void OLED_PrintBMP(uint8 x0,uint8 y0,uint8 x1,uint8 y1,const char bmp[])
+ 335          {   
+ 336   1        uint16 temp=0;
+ 337   1        uint8 x,y;
+ 338   1        for(y = y0; y <= y1; ++y)
+ 339   1        {
+ 340   2          OLED_SetPos(x0,y);        
+ 341   2          for(x = x0; x <= x1; ++x)
+ 342   2          {      
+ 343   3            OLED_WriteDat(bmp[temp++]);       
+ 344   3          }
+ 345   2        }
+ 346   1      }
+ 347          
+ 348          /****************** 以下为内部函数，不可调用 ******************/
+ 349          static void OLED_DLY_ms(uint16 ms)
+ 350          {                         
+ 351   1        unsigned int a;
+ 352   1        while(ms)
+ 353   1        {
+ 354   2          a=222;
+ 355   2          while(a--);
+ 356   2          ms--;
+ 357   2        }
+ 358   1        return;
+ 359   1      }
+ 360          
+ 361          static void OLED_PinInit(void)
+C51 COMPILER V9.54   OLED                                                                  09/18/2019 18:45:58 PAGE 7   
+
+ 362          {
+ 363   1        
+ 364   1      }
+ 365          
+ 366          static void OLED_WriteDat(uint8 data_t)   //写数据
+ 367          {
+ 368   1        uint8 temp = 8;
+ 369   1      #ifdef USE_CS
+                OLED_CSL;
+              #endif /* USE_CS */
+ 372   1        OLED_DCH;  //DC拉高，写数据
+ 373   1        OLED_SCLL;
+ 374   1        while (temp--)
+ 375   1        {
+ 376   2          if (data_t & 0x80)
+ 377   2          {
+ 378   3            OLED_SDAH;
+ 379   3          }
+ 380   2          else
+ 381   2          {
+ 382   3            OLED_SDAL;
+ 383   3          }
+ 384   2          OLED_SCLH;
+ 385   2          OLED_SCLL;
+ 386   2          data_t <<= 1;    
+ 387   2        }
+ 388   1      #ifdef USE_CS
+                OLED_CSH;
+              #endif /* USE_CS */
+ 391   1      }
+ 392          static void OLED_WriteCmd(uint8 cmd) //写命令
+ 393          {
+ 394   1        uint8 temp = 8;
+ 395   1      #ifdef USE_CS
+                OLED_CSL;
+              #endif /* USE_CS */
+ 398   1        OLED_DCL;  //DC拉低，写命令
+ 399   1        OLED_SCLL;
+ 400   1        while (temp--)
+ 401   1        {
+ 402   2          if (cmd & 0x80)
+ 403   2          {
+ 404   3            OLED_SDAH;
+ 405   3          }
+ 406   2          else
+ 407   2          {
+ 408   3            OLED_SDAL;
+ 409   3          }
+ 410   2          OLED_SCLH;
+ 411   2          OLED_SCLL;
+ 412   2          cmd <<= 1;   
+ 413   2        }
+ 414   1      #ifdef USE_CS
+                OLED_CSH;
+              #endif /* USE_CS */
+ 417   1      }
+ 418          
+ 419          static void OLED_SetPos(uint8 x, uint8 y)//设置坐标
+ 420          { 
+ 421   1        OLED_WriteCmd(0xb0+y);
+ 422   1        OLED_WriteCmd(((x&0xf0)>>4)|0x10);
+ 423   1        OLED_WriteCmd((x&0x0f)|0x01); 
+C51 COMPILER V9.54   OLED                                                                  09/18/2019 18:45:58 PAGE 8   
+
+ 424   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   1715    ----
+   CONSTANT SIZE    =   2475    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----      78
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

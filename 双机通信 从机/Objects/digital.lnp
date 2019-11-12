@@ -1,0 +1,5 @@
+".\Objects\digi.obj",
+".\Objects\UART.obj",
+".\Objects\digital.obj" 
+TO ".\Objects\digital" 
+PRINT(".\Listings\digital.m51") RAMSIZE(256) 

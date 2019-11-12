@@ -1,0 +1,64 @@
+C51 COMPILER V9.59.0.0   ____                                                              05/13/2019 12:21:50 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE ____
+OBJECT MODULE PLACED IN .\Objects\模板.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE 模板.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\模板
+                    -.lst) TABS(2) OBJECT(.\Objects\模板.obj)
+
+line level    source
+
+   1          #include <reg52.h>
+   2          typedef unsigned int uint;
+   3          typedef unsigned char uchar;
+   4          void delay_ms(uint t)
+   5          {
+   6   1        while(t--)
+   7   1        {
+   8   2          uchar i=11,j=190;
+   9   2          do
+  10   2          {
+  11   3            while(--j);
+  12   3          }while(--i);
+  13   2        }
+  14   1      }
+  15          
+  16          //sbit blue=P20;
+  17          //sbit pink=P21;
+  18          //sbit yellow=P22;
+  19          //sbit orange=P23;
+  20          //sbit power=P40;
+  21          uchar code CCW[8]={0x08,0x0c,0x04,0x06,0x02,0x03,0x01,0x09};   //逆时钟旋转相序表
+  22          uchar code CW[8]={0x09,0x01,0x03,0x02,0x06,0x04,0x0c,0x08};    //正时钟旋转相序表
+  23          void main()
+  24          {
+  25   1        uint i;
+  26   1        while(1)
+  27   1        {
+  28   2          for(i=0;i<8;i++)
+  29   2          {
+  30   3            P2=CCW[i];
+  31   3            delay_ms(1000);
+  32   3          }
+  33   2          delay_ms(100);
+  34   2          for(i=0;i<8;i++)
+  35   2          {
+  36   3            P2=CW[i];
+  37   3            delay_ms(1000);
+  38   3          }
+  39   2        }
+  40   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     96    ----
+   CONSTANT SIZE    =     16    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       2
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

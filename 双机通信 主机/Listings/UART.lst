@@ -1,0 +1,72 @@
+C51 COMPILER V9.59.0.0   UART                                                              04/21/2019 12:32:47 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE UART
+OBJECT MODULE PLACED IN .\Objects\UART.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE UART.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\UART
+                    -.lst) TABS(2) OBJECT(.\Objects\UART.obj)
+
+line level    source
+
+   1          
+   2          //UART驱动代码.c文件
+   3          
+   4          #include <reg52.h>
+   5          #include "UART.h"
+   6          #include "display.h"
+   7          
+   8          sbit k3=P3^2;
+   9          
+  10          void delay(int i)
+  11          {
+  12   1        while(i--);
+  13   1      }
+  14          
+  15          void Uart_init()
+  16          {
+  17   1        TMOD=0x20;//定时器1,八位自动重装方式
+  18   1        TH1=0xF3;  //晶振12MHZ，波特率倍增，波特率4800
+  19   1        TL1=0xF3;
+  20   1        PCON=0x80;//SMOD波特率倍增位，只用其中的最高位
+  21   1        TR1=1;  //定时器1运行
+  22   1        SCON=0x50; // 0101 0000
+  23   1        EX0=1;  //打开外部中断0
+  24   1        IT0=1;  //下降沿触发
+  25   1        ES=1;
+  26   1        EA=1;
+  27   1      }
+  28          
+  29          void Ex0_send() interrupt 0  //按键时发送信息
+  30          {
+  31   1        delay(100);
+  32   1        if(k3==0)
+  33   1        {
+  34   2          ES=0;
+  35   2          SBUF=1;
+  36   2          while(!TI);
+  37   2          TI=0;
+  38   2          ES=1;
+  39   2        }
+  40   1      }
+  41          
+  42          void Uart_receive() interrupt 4  //用于接收信息
+  43          {
+  44   1        RI=0;
+  45   1        display();
+  46   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    144    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+C51 COMPILER V9.59.0.0   UART                                                              04/21/2019 12:32:47 PAGE 2   
+
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

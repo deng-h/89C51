@@ -1,0 +1,47 @@
+C51 COMPILER V9.59.0.0   TICK                                                              04/27/2019 13:11:20 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE TICK
+OBJECT MODULE PLACED IN .\Objects\tick.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE tick.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\tick
+                    -.lst) TABS(2) OBJECT(.\Objects\tick.obj)
+
+line level    source
+
+   1          #include "STC15Fxxxx.h"
+*** WARNING C318 IN LINE 1 OF tick.c: can't open file 'STC15Fxxxx.h'
+   2          #include "ledshift.h"
+*** WARNING C318 IN LINE 2 OF tick.c: can't open file 'ledshift.h'
+   3          #include "task.h"
+*** WARNING C318 IN LINE 3 OF tick.c: can't open file 'task.h'
+   4          
+   5          #define T5MS (65536-11059200L*5/1000/12)     //12T模式，5ms定时
+   6          
+   7          
+   8          void Tick_Init(void)
+   9          {
+  10   1        TMOD &= 0x0F;        //方式0
+*** ERROR C202 IN LINE 10 OF tick.c: 'TMOD': undefined identifier
+  11   1        TL1 = (uint8_t)T5MS;        //??????
+*** ERROR C202 IN LINE 11 OF tick.c: 'TL1': undefined identifier
+  12   1        TH1 = (uint8_t)(T5MS>>8);
+*** ERROR C202 IN LINE 12 OF tick.c: 'TH1': undefined identifier
+  13   1        TR1 = 1; //???0????
+*** ERROR C202 IN LINE 13 OF tick.c: 'TR1': undefined identifier
+  14   1        ET1 = 1; //?????0??
+*** ERROR C202 IN LINE 14 OF tick.c: 'ET1': undefined identifier
+  15   1      }
+  16          
+  17          unsigned char Count=0;
+  18          
+  19          void tm1_isr() interrupt 3 using 1
+  20          {
+  21   1        PeriodTask5ms();
+  22   1        if(Count++>=200)
+  23   1        {
+  24   2          Count=0;
+  25   2          PeriodTask1s();
+  26   2        }
+  27   1      }
+
+C51 COMPILATION COMPLETE.  3 WARNING(S),  5 ERROR(S)

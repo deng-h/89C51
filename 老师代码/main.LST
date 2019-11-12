@@ -1,0 +1,55 @@
+C51 COMPILER V9.59.0.0   MAIN                                                              05/20/2019 21:08:43 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN main.OBJ
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND TABS(2)
+
+line level    source
+
+   1          #include "STC15Fxxxx.h"
+   2          #include "stdint.h"
+   3          #include "LedShift.h"
+   4          #include "tick.h"
+   5          #include "UART.h"
+   6          
+   7          #define MAX 32
+   8          
+   9          void main()
+  10          {
+  11   1        uint8_t i,temp;   
+  12   1        uint8_t ReadBuf[MAX];
+  13   1        uint8_t Read_Length;
+  14   1        EA=0;
+  15   1        Tick_Init();
+  16   1        UART_Init();
+  17   1        EA=1;
+  18   1        while(1)
+  19   1        {
+  20   2          if(Read_Length=UART_Read(ReadBuf))   //把接收到的数据放到ReadBuf数组里并把数据个数给Read_Length
+  21   2          {
+  22   3            for(i=0;i<Read_Length;i++)     //数组元素反转
+  23   3            { 
+  24   4              temp=ReadBuf[i];
+  25   4              ReadBuf[i]=ReadBuf[Read_Length-i-1];
+  26   4              ReadBuf[Read_Length-i-1]=temp;
+  27   4            }
+  28   3            UART_Write(ReadBuf,Read_Length);
+  29   3          }
+  30   2        }
+  31   1      }
+  32          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     79    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----      33
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
